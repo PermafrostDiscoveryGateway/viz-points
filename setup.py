@@ -18,7 +18,7 @@ setuptools.setup(
     install_requires=['py3dtiles'],
     entry_points = {
         'console_scripts': [
-            'tilepoints=pdgpoints.pipeline:run',
+            'tilepoints=pdgpoints.pipeline:cli',
         ],
     },
     python_requires='>=3.9, <4.0',
