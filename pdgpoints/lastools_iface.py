@@ -37,7 +37,8 @@ def las2las(flist, output_dir, archive_dir='', archive: bool=False):
         # start process
         exitcode = process.wait()
         if exitcode != 0:
-            L.error('Subprocess exited with nonzero exit code--check log output')
+            L.error('las2las subprocess exited with nonzero exit code--check log output')
+            exit(1)
         if archive:
             # move the file to the archive
             try:
