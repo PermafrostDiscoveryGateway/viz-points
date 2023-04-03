@@ -1,16 +1,16 @@
 from pathlib import Path
-import getopt
 import os
-import sys
+from threading import Thread
 
 from . import L
 from . import utils
 from . import lastools_iface
-from . import defs
 
-def process(f, merge: bool=True):
+class Pipeline(Thread):
     '''
-    Process the input LAS file.
+    The LiDAR processing pipeline.
+    Takes input point cloud files of any type supported by lastools
+    and outputs 3dtiles files.
 
     Variables:
     :param f: The file to process
@@ -19,48 +19,45 @@ def process(f, merge: bool=True):
     :return: Processed data location
     :rtype: str
     '''
-    f = Path(f)
-    base_dir = os.path.split(f)
-    vlrcorrect_dir = os.path.join(base_dir, 'vlrcorrect')
-    archive_dir = os.path.join(base_dir, 'archive')
-    out_dir = os.path.join(base_dir, '3dtiles')
 
-    for d in [vlrcorrect_dir, archive_dir, out_dir]:
-        L.info('Creating dir %s' % (d))
-        utils.make_dirs(d)
+    def __init__(self, f, multi: bool=False, merge: bool=True):
+        '''
+        Initialize the processing pipeline.
+        '''
+        L.info('Initializing pipeline.')
+        self.f = Path(f)
+        self.base_dir, self.bn = os.path.split(self.f)
+        self.given_name, self.ext = os.path.splitext(self.bn)
+        self.vlrcorrect_dir = os.path.join(self.base_dir, 'vlrcorrect')
+        self.archive_dir = os.path.join(self.base_dir, 'archive')
+        self.out_dir = os.path.join(self.base_dir, '3dtiles')
+        self.las_name = os.path.join(self.vlrcorrect_dir, '%s.las' % (self.given_name))
+        self.multi = multi
+        self.merge = merge
+        utils.log_init_stats(self)
 
-    flist = utils.get_flist()
 
-    lastools_iface.las2las(flist,
-                           vlrcorrect_dir,
-                           archive_dir=archive_dir,
-                           archive=True)
-    
+    def process(self):
+        '''
+        Process the input LAS file.
+        '''
 
-    if merge:
-        utils.merge(in_dir=vlrcorrect_dir, out_dir=out_dir)
-    return str(out_dir)
+        for d in [self.vlrcorrect_dir, self.archive_dir, self.out_dir]:
+            L.info('Creating dir %s' % (d))
+            utils.make_dirs(d)
 
-def cli():
-    '''
-    Parse the command options and arguments.
-    '''
+        flist = utils.get_flist(dir=self.base_dir, ext=self.ext, multi=self.multi)
 
-    try:
-        opts = getopt.getopt(sys.argv[1:], 'hf:',
-            ['help', 'file=',]
-            )[0]
-    except Exception as e:
-        L.error('%s: %s' % (repr(e), e))
-    
-    for o, a in opts:
-        if o in ('-h', '--help'):
-            print(defs.HELP_TXT)
-            exit(0)
-        if o in ('-f', '--file'):
-            if os.path.exists(a):
-                f = a
-            else:
-                L.error('No file at %s' % (a))
-                exit(1)
-    process(f)
+        lastools_iface.las2las(flist,
+                            self.vlrcorrect_dir,
+                            archive_dir=self.archive_dir,
+                            archive=True)
+        
+        flist = utils.get_flist(dir=self.vlrcorrect_dir, ext=self.ext, multi=self.multi)
+
+
+
+        if self.merge:
+            utils.merge(in_dir=self.vlrcorrect_dir, out_dir=self.out_dir)
+        return str(self.out_dir)
+
