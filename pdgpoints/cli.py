@@ -13,7 +13,7 @@ def cli():
 
     try:
         opts = getopt.getopt(sys.argv[1:], 'hmf:',
-            ['help', 'multi', 'file=']
+            ['help', 'merge', 'file=']
             )[0]
     except Exception as e:
         L.error('%s: %s' % (repr(e), e))
@@ -22,10 +22,10 @@ def cli():
         if o in ('-h', '--help'):
             print(defs.HELP_TXT)
             exit(0)
-        if o in ('-m', '--multi'):
-            multi = True
+        if o in ('-m', '--merge'):
+            merge = True
         else:
-            multi = False
+            merge = False
         if o in ('-f', '--file'):
             if os.path.exists(a):
                 f = a
@@ -33,4 +33,4 @@ def cli():
                 L.error('No file at %s' % (a))
                 exit(1)
 
-    Pipeline(f, multi)
+    Pipeline(f, merge)

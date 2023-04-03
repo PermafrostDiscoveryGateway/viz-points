@@ -20,7 +20,7 @@ class Pipeline(Thread):
     :rtype: str
     '''
 
-    def __init__(self, f, multi: bool=False, merge: bool=True):
+    def __init__(self, f, merge: bool=True):
         '''
         Initialize the processing pipeline.
         '''
@@ -32,7 +32,6 @@ class Pipeline(Thread):
         self.archive_dir = os.path.join(self.base_dir, 'archive')
         self.out_dir = os.path.join(self.base_dir, '3dtiles')
         self.las_name = os.path.join(self.vlrcorrect_dir, '%s.las' % (self.given_name))
-        self.multi = multi
         self.merge = merge
         utils.log_init_stats(self)
 
@@ -46,15 +45,11 @@ class Pipeline(Thread):
             L.info('Creating dir %s' % (d))
             utils.make_dirs(d)
 
-        flist = utils.get_flist(dir=self.base_dir, ext=self.ext, multi=self.multi)
-
-        lastools_iface.las2las(flist,
+        lastools_iface.las2las(self.f,
                             self.vlrcorrect_dir,
                             archive_dir=self.archive_dir,
                             archive=True)
         
-        flist = utils.get_flist(dir=self.vlrcorrect_dir, ext=self.ext, multi=self.multi)
-
 
 
         if self.merge:

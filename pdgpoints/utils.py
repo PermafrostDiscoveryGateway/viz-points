@@ -39,7 +39,10 @@ def merge(in_dir: Path, out_dir: Path):
     mergetime = (datetime.now() - mergestart).seconds/60
     L.info('Finished merge (%.1f min)' % (mergetime))
 
-def get_flist(dir, ext, multi=False):
+def _get_flist(dir, ext):
+    '''
+    Depreciated
+    '''
     filename = '*.las'
     # To define each .las file within each subdir as a string representation with forward slashes, use as_posix()
     # ** represents that any subdir string can be present between the base_dir and the filename (not using this because we don't want to include subdirs)
@@ -55,7 +58,6 @@ def log_init_stats(self):
     :param self self: The `self` object from which to extract values.
     '''
     L.info('File:            %s' % (self.f))
-    L.info('Multi-file on:   %s' % (self.multi))
     L.info('Merge on:        %s' % (self.merge))
     L.info('Given name:      %s' % (self.given_name))
     L.info('File extension:  %s' % (self.ext))
