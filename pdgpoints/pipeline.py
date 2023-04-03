@@ -1,14 +1,16 @@
 from pathlib import Path
-import subprocess
 import getopt
 import os
+import sys
 
 from . import L
 from . import utils
+from . import lastools_iface
+from . import defs
 
 def process(f, merge: bool=True):
     '''
-    Process the input file.
+    Process the input LAS file.
 
     Variables:
     :param f: The file to process
@@ -24,11 +26,16 @@ def process(f, merge: bool=True):
     out_dir = os.path.join(base_dir, '3dtiles')
 
     for d in [vlrcorrect_dir, archive_dir, out_dir]:
+        L.info('Creating dir %s' % (d))
         utils.make_dirs(d)
+
+    flist = utils.get_flist()
+
+    lastools_iface.las2las(flist, vlrcorrect_dir, archive_dir)
 
     if merge:
         utils.merge(in_dir=vlrcorrect_dir, out_dir=out_dir)
-    return str(dataloc)
+    return str(out_dir)
 
 def cli():
     '''
@@ -44,7 +51,7 @@ def cli():
     
     for o, a in opts:
         if o in ('-h', '--help'):
-            print(help_txt)
+            print(defs.HELP_TXT)
             exit(0)
         if o in ('-f', '--file'):
             if os.path.exists(a):
