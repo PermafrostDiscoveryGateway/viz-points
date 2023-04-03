@@ -11,7 +11,7 @@ def log_subprocess_output(pipe):
     except CalledProcessError as e:
         L.error("Subprocess Error> %s: %s" % (repr(e), str(e)))
 
-def las2las(flist, output_dir, archive_dir='', archive: bool=True):
+def las2las(flist, output_dir, archive_dir='', archive: bool=False):
     las2lasstart = datetime.now()
     L.info('Using las2las to rewrite malformed VLR (e.g. from QT Modeler)... (step 1 of 3)')
     i = 0

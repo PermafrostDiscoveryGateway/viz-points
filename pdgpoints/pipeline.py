@@ -31,7 +31,11 @@ def process(f, merge: bool=True):
 
     flist = utils.get_flist()
 
-    lastools_iface.las2las(flist, vlrcorrect_dir, archive_dir)
+    lastools_iface.las2las(flist,
+                           vlrcorrect_dir,
+                           archive_dir=archive_dir,
+                           archive=True)
+    
 
     if merge:
         utils.merge(in_dir=vlrcorrect_dir, out_dir=out_dir)
