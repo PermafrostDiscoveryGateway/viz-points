@@ -1,7 +1,7 @@
 import logging
 import os
 
-def start_logging(console: bool=True):
+def start_logging(console: bool=False):
     '''
     Start the logger.
 
