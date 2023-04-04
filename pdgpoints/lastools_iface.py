@@ -43,6 +43,7 @@ def las2las(f,
         # move the file to the archive
         try:
             assert (archive_dir != '')
+            bn = os.path.split(f)[1]
             an = os.path.join(archive_dir, bn)
             L.info('Archiving to %s' % (an))
             os.replace(src=f, dst=an)
