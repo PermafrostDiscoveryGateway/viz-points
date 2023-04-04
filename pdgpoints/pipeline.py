@@ -37,7 +37,7 @@ class Pipeline(Thread):
         utils.log_init_stats(self)
 
 
-    def process(self):
+    def run(self):
         '''
         Process the input LAS file.
         '''
