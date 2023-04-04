@@ -4,14 +4,20 @@ from datetime import datetime
 
 from . import L
 
-def log_subprocess_output(pipe):
+def log_subprocess_output(pipe, verbose=False):
+    L.propagate = verbose
     try:
         for line in iter(pipe.readline, b''): # b'\n'-separated lines
             L.info('subprocess output: %r', line.decode('utf-8'.strip()))
     except CalledProcessError as e:
         L.error("Subprocess Error> %s: %s" % (repr(e), str(e)))
 
-def las2las(f, output_file, archive_dir='', archive: bool=False):
+def las2las(f,
+            output_file,
+            archive_dir='',
+            archive: bool=False,
+            verbose=False):
+    L.propagate = verbose
     las2lasstart = datetime.now()
     L.info('Using las2las to rewrite malformed VLR (e.g. from QT Modeler)... (step 1 of 3)')
     # construct command
@@ -27,7 +33,7 @@ def las2las(f, output_file, archive_dir='', archive: bool=False):
     stdout=PIPE, stderr=STDOUT)
     # pass pipe to be parsed
     with process.stdout:
-        log_subprocess_output(process.stdout)
+        log_subprocess_output(process.stdout, verbose=verbose)
     # start process
     exitcode = process.wait()
     if exitcode != 0:

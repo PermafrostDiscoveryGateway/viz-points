@@ -4,16 +4,17 @@ from datetime import datetime, timedelta
 
 from . import L
 
-def tile(f, out_dir):
+def tile(f, out_dir, verbose=False):
     '''
     '''
+    L.propagate = verbose
     L.info('Starting tiling process for %s' % (f))
     tilestart = datetime.now()
     L.info('Creating tile directory')
     fndir = os.path.join(out_dir, os.path.splitext(os.path.basename(f))[0])
 
     converter = convert._Convert(files=f,
-                                 outfolder=out_dir,
+                                 outfolder=fndir,
                                  overwrite=True,
                                  benchmark=True)
     converter.convert()
@@ -22,15 +23,17 @@ def tile(f, out_dir):
     L.info('Finished tiling (%.1f min)' % (tiletime))
 
 
-def merge(dir, overwrite: bool=False):
+def merge(dir, overwrite: bool=False, verbose=False):
     '''
     '''
+    L.propagate = verbose
+    verbosity = 2 if verbose else 0
     L.info('Starting merge process in %s' % (dir))
     mergestart = datetime.now()
 
     merger.merge(folder=dir,
                  overwrite=overwrite,
-                 verbose=1)
+                 verbose=verbosity)
 
     mergetime = (datetime.now() - mergestart).seconds/60
     L.info('Finished merge (%.1f min)' % (mergetime))

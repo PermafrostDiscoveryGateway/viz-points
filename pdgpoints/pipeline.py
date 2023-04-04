@@ -21,11 +21,20 @@ class Pipeline(Thread):
     :rtype: str
     '''
 
-    def __init__(self, f, merge: bool=True):
+    def __init__(self,
+                 f,
+                 merge: bool=True,
+                 verbose=False):
         '''
         Initialize the processing pipeline.
         '''
-        L.info('Initializing pipeline.')
+        global L
+        if verbose:
+            L.propagate = True
+            L.setLevel('DEBUG')
+        self.verbose = verbose
+        self.L = L
+        self.L.debug('Initializing pipeline.')
         self.f = Path(f)
         self.base_dir, self.bn = os.path.split(self.f)
         self.given_name, self.ext = os.path.splitext(self.bn)
@@ -43,18 +52,24 @@ class Pipeline(Thread):
         '''
 
         for d in [self.rewrite_dir, self.archive_dir, self.out_dir]:
-            L.info('Creating dir %s' % (d))
+            self.L.info('Creating dir %s' % (d))
             utils.make_dirs(d)
 
         lastools_iface.las2las(f=self.f,
                                output_file=self.las_name,
                                archive_dir=self.archive_dir,
-                               archive=True,)
+                               archive=True,
+                               verbose=self.verbose)
         
-        py3dtiles_iface.tile(f=self.f, out_dir=self.out_dir)
+        py3dtiles_iface.tile(f=self.f,
+                             out_dir=self.out_dir,
+                             L=self.L,
+                             verbose=self.verbose)
 
         if self.merge:
             py3dtiles_iface.merge(dir=self.out_dir,
-                                  overwrite=True)
+                                  overwrite=True,
+                                  L=self.L,
+                                  verbose=self.verbose)
 
         return str(self.out_dir)
