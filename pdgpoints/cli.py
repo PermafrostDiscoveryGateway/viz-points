@@ -37,4 +37,4 @@ def cli():
                 L.error('No file at %s' % (a))
                 exit(1)
 
-    Pipeline(f, merge, verbose)
+    Pipeline(f, merge, verbose).start()
