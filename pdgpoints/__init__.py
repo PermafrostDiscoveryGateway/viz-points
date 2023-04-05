@@ -19,7 +19,10 @@ def start_logging(console: bool=False):
         # turn off logger propagation (messages will not print to stdout)
         L.propagate = False
     L.setLevel("INFO")
-    handler = logging.FileHandler(os.path.expanduser("~/bin/drpworkflow/log/log.log"))
+    home = os.path.expanduser('~').replace('\\', '/')
+    log_loc = os.path.join(home, 'viz-points', 'log', 'pdgpoints.log').replace('\\', '/')
+    os.makedirs(log_loc, exist_ok=True)
+    handler = logging.FileHandler(log_loc)
     formatter = logging.Formatter(fmt=LOG_FMT, datefmt=DATE_FMT)
     handler.setFormatter(formatter)
     L.addHandler(handler)
