@@ -12,8 +12,8 @@ def cli():
     '''
 
     try:
-        opts = getopt.getopt(sys.argv[1:], 'hvmf:',
-            ['help', 'verbose', 'merge', 'file=']
+        opts = getopt.getopt(sys.argv[1:], 'hvcmaf:',
+            ['help', 'verbose', 'copy_I_to_RGB', 'merge', 'archive' 'file=']
             )[0]
     except Exception as e:
         L.error('%s: %s' % (repr(e), e))
@@ -22,14 +22,10 @@ def cli():
         if o in ('-h', '--help'):
             print(defs.HELP_TXT)
             exit(0)
-        if o in ('-v', '--verbose'):
-            verbose = True
-        else:
-            verbose = False
-        if o in ('-m', '--merge'):
-            merge = True
-        else:
-            merge = False
+        verbose = True if o in ('-v', '--verbose') else False
+        i_to_rgb = True if o in ('-c', '--copy_I_to_RGB') else False
+        merge = True if o in ('-m', '--merge') else False
+        archive = True if o in ('-a', '--archive') else False
         if o in ('-f', '--file'):
             if os.path.exists(a):
                 f = a
@@ -37,4 +33,9 @@ def cli():
                 L.error('No file at %s' % (a))
                 exit(1)
 
-    Pipeline(f, merge, verbose).start()
+    p = Pipeline(f=f,
+                 intensity_to_RGB=i_to_rgb,
+                 merge=merge,
+                 archive=archive,
+                 verbose=verbose)
+    p.start()

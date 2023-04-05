@@ -24,6 +24,8 @@ class Pipeline(Thread):
     def __init__(self,
                  f,
                  merge: bool=True,
+                 intensity_to_RGB: bool=False,
+                 archive: bool=False,
                  verbose=False):
         '''
         Initialize the processing pipeline.
@@ -42,6 +44,8 @@ class Pipeline(Thread):
         self.archive_dir = os.path.join(self.base_dir, 'archive')
         self.out_dir = os.path.join(self.base_dir, '3dtiles')
         self.las_name = os.path.join(self.rewrite_dir, '%s.las' % (self.given_name))
+        self.intensity_to_RGB = intensity_to_RGB
+        self.archive = archive
         self.merge = merge
         utils.log_init_stats(self)
 
@@ -58,7 +62,8 @@ class Pipeline(Thread):
         lastools_iface.las2las(f=self.f,
                                output_file=self.las_name,
                                archive_dir=self.archive_dir,
-                               archive=True,
+                               intensity_to_RGB=self.intensity_to_RGB,
+                               archive=self.archive,
                                verbose=self.verbose)
         
         py3dtiles_iface.tile(f=self.f,
