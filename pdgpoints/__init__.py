@@ -1,6 +1,8 @@
 import logging
 import os
 
+from ._version import version
+
 def start_logging(console: bool=False):
     '''
     Start the logger.
@@ -17,12 +19,11 @@ def start_logging(console: bool=False):
         # turn off logger propagation (messages will not print to stdout)
         L.propagate = False
     L.setLevel("INFO")
-    handler = logging.handlers.WatchedFileHandler(
-        os.environ.get("LOGFILE", os.path.expanduser("~/bin/drpworkflow/log/log.log")))
+    handler = logging.FileHandler(os.path.expanduser("~/bin/drpworkflow/log/log.log"))
     formatter = logging.Formatter(fmt=LOG_FMT, datefmt=DATE_FMT)
     handler.setFormatter(formatter)
     L.addHandler(handler)
-    L.info("Logging start.")
+    L.info("~~ pdgpoints version %s ~~" % (version))
     return L
 
 L = start_logging()
