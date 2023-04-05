@@ -20,8 +20,9 @@ def start_logging(console: bool=False):
         L.propagate = False
     L.setLevel("INFO")
     home = os.path.expanduser('~').replace('\\', '/')
-    log_loc = os.path.join(home, 'viz-points', 'log', 'pdgpoints.log').replace('\\', '/')
-    os.makedirs(log_loc, exist_ok=True)
+    log_dir = os.path.join(home, 'viz-points', 'log').replace('\\', '/')
+    log_loc = os.path.join(log_dir, 'pdgpoints.log').replace('\\', '/')
+    os.makedirs(log_dir, exist_ok=True)
     handler = logging.FileHandler(log_loc)
     formatter = logging.Formatter(fmt=LOG_FMT, datefmt=DATE_FMT)
     handler.setFormatter(formatter)
