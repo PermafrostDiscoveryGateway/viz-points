@@ -14,7 +14,7 @@ def start_logging(console: bool=False):
     '''
     DATE_FMT = '%Y-%m-%dT%H:%M:%S'
     LOG_FMT = "%(asctime)s:%(levelname)s: %(message)s" # overrides import
-    L = logging.getLogger('DRPWorkflow')
+    L = logging.getLogger('pdgpoints')
     if not console:
         # turn off logger propagation (messages will not print to stdout)
         L.propagate = False
