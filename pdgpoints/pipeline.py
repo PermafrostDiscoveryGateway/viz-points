@@ -30,6 +30,7 @@ class Pipeline(Thread):
         '''
         Initialize the processing pipeline.
         '''
+        super().__init__()
         global L
         if verbose:
             L.propagate = True
