@@ -1,1 +1,1 @@
-include bin/las2las
+include pdgpoints/bin/*
