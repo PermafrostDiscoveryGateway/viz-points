@@ -32,8 +32,8 @@ def log_init_stats(self):
     self.L.info('Verbose:         %s' % (self.L.propagate))
     self.L.debug('base_dir:        %s' % (self.base_dir))
     self.L.debug('bn:              %s' % (self.bn))
-    self.L.debug('vlrcorrect_dir:  %s' % (self.vlrcorrect_dir))
+    self.L.debug('rewrite_dir:     %s' % (self.rewrite_dir))
     self.L.debug('archive_dir:     %s' % (self.archive_dir))
     self.L.debug('out_dir:         %s' % (self.out_dir))
-    self.L.debug('las_name:         %s' % (self.las_name))
+    self.L.debug('las_name:        %s' % (self.las_name))
 

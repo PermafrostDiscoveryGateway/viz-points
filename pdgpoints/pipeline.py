@@ -66,7 +66,7 @@ class Pipeline(Thread):
                                archive=self.archive,
                                verbose=self.verbose)
         
-        py3dtiles_iface.tile(f=self.f,
+        py3dtiles_iface.tile(f=self.las_name,
                              out_dir=self.out_dir,
                              L=self.L,
                              verbose=self.verbose)
