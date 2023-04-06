@@ -3,7 +3,7 @@ import os
 
 from ._version import version
 
-def start_logging(console: bool=False):
+def start_logging(console: bool=True):
     '''
     Start the logger.
 
