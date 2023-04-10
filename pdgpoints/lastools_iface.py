@@ -14,6 +14,38 @@ def log_subprocess_output(pipe, verbose=False):
     except CalledProcessError as e:
         L.error("Subprocess Error> %s: %s" % (repr(e), str(e)))
 
+def lasinfo(f, verbose=False):
+    '''
+    Use lasinfo to extract CRS info (in EPSG format) from a LAS or LAZ point cloud file.
+
+    Variables:
+    :param f: The input file
+    :type f: str or pathlib.Path
+    :return: The EPSG code of the CRS, and CRS info as WKT
+    :rtype: list[str, str]
+    '''
+    command = [
+        LASINFO_LOC,
+        '-i', f,
+        '-stdout',
+        #'-target_epsg', out_crs,
+    ]
+
+    process = Popen(command,
+                    stdout=PIPE,
+                    stderr=STDOUT)
+
+    wkt = check_output(('grep', 'AUTHORITY'), stdin=process.stdout)
+    with process.stdout:
+        log_subprocess_output(process.stdout, verbose=verbose)
+    exitcode = process.wait()
+    if exitcode != 0:
+        L.error('lasinfo subprocess exited with nonzero exit code--check log output')
+        exit(1)
+    epsg = wkt.split('"')[-2]
+
+    return epsg, wkt
+
 def las2las(f,
             output_file,
             #out_crs: str='4326',
