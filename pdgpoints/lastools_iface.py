@@ -1,7 +1,9 @@
 import os
-from subprocess import Popen, PIPE, STDOUT, CalledProcessError
+from subprocess import Popen, PIPE, STDOUT, CalledProcessError, check_output
 from datetime import datetime
+from logging import StreamHandler
 
+from .defs import LAS2LAS_LOC, LASINFO_LOC
 from . import L
 
 def log_subprocess_output(pipe, verbose=False):
@@ -14,6 +16,7 @@ def log_subprocess_output(pipe, verbose=False):
 
 def las2las(f,
             output_file,
+            #out_crs: str='4326',
             archive_dir='',
             archive: bool=False,
             intensity_to_RGB: bool=False,
@@ -22,6 +25,8 @@ def las2las(f,
     Simple wrapper around las2las to repair and rework LAS files.
     LAS is rewritten with valid VLRs to correct errors propagated by processing suites
     e.g. QT Modeler, to be read by software that is picky about LAS format, e.g. PDAL.
+    Output is converted to WGS84 earth-centered earth-fixed (ECEF) CRS, EPSG 4326
+    by default, to prepare for display in Cesium.
     Also, an option exists to copy intensity values into RGB for viewing.
     Commands are written to log output and STDOUT from las2las should be as well.
 
@@ -36,19 +41,20 @@ def las2las(f,
     :param bool intensity_to_RGB: Whether or not to copy intensity values to RGB
     :param bool verbose: Whether or not to write STDOUT (output will always be written to log file)
     '''
-    L.propagate = verbose
+    if verbose:
+        L.propagate = verbose
     las2lasstart = datetime.now()
     L.info('Using las2las to rewrite malformed VLR (e.g. from QT Modeler)... (step 1 of 3)')
     # construct command
     command = [
-        '../bin/las2las',
+        LAS2LAS_LOC,
         '-i', f,
-        '-target_ecef',
-        '-target_epsg', '4326',
+        '-set_ogc_wkt', '0',
+        #'-target_epsg', out_crs,
     ]
     if intensity_to_RGB:
         # add args to copy I into attrib 0
-        command.append('-copy_intensity_into_attribute')
+        command.append('-copy_intensity_into_register')
         command.append('0')
     # add args defining output file location
     command.append('-o')
@@ -80,13 +86,14 @@ def las2las(f,
             L.error('%s: %s' % (repr(e), e))
     if intensity_to_RGB:
         command = [
-            '../bin/las2las',
+            LAS2LAS_LOC,
             '-i', output_file,
-            '-copy_attribute_into_R', '0',
-            '-copy_attribute_into_G', '0',
-            '-copy_attribute_into_B', '0'
+            '-copy_register_into_R', '0',
+            '-copy_register_into_G', '0',
+            '-copy_register_into_B', '0',
+            '-set_register', '0', '0'
         ]
-        L.info('Copying intensity to attribute table...')
+        L.info('Copying intensity to register...')
         L.debug('Command args: %s' % (command))
         # new subprocess
         process = Popen(command,
