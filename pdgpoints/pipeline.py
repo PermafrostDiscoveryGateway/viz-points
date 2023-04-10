@@ -68,6 +68,7 @@ class Pipeline(Thread):
         
         py3dtiles_iface.tile(f=self.las_name,
                              out_dir=self.out_dir,
+                             crs=4978,
                              verbose=self.verbose)
 
         if self.merge:

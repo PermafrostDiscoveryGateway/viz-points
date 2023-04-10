@@ -1,10 +1,12 @@
 import os
 from py3dtiles import convert, merger
+from py3dtiles.utils import str_to_CRS
 from datetime import datetime, timedelta
+from logging import StreamHandler
 
 from . import L
 
-def tile(f, out_dir, verbose=False):
+def tile(f, out_dir, crs='4978', verbose=False):
     '''
     '''
     L.propagate = verbose
@@ -12,10 +14,18 @@ def tile(f, out_dir, verbose=False):
     tilestart = datetime.now()
     L.info('Creating tile directory')
     fndir = os.path.join(out_dir, os.path.splitext(os.path.basename(f))[0])
+    CRSi = str_to_CRS('4326')
+    CRSo = str_to_CRS(crs)
+    #L.info('CRS to convert from: %s' % (CRSi))
+    L.info('CRS to convert to:   %s' % (CRSo))
 
     converter = convert._Convert(files=f,
                                  outfolder=fndir,
                                  overwrite=True,
+                                 #crs_in=CRSi,
+                                 crs_out=CRSo,
+                                 force_crs_in=True,
+                                 rgb=True,
                                  benchmark=True)
     converter.convert()
 
