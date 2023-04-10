@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from logging import StreamHandler
 from threading import Thread
 
 from . import L
@@ -26,15 +27,13 @@ class Pipeline(Thread):
                  merge: bool=True,
                  intensity_to_RGB: bool=False,
                  archive: bool=False,
-                 verbose=False):
+                 verbose=True):
         '''
         Initialize the processing pipeline.
         '''
         super().__init__()
         global L
-        if verbose:
-            L.propagate = True
-            L.setLevel('DEBUG')
+        L.propagate = verbose
         self.verbose = verbose
         self.L = L
         self.L.debug('Initializing pipeline.')
