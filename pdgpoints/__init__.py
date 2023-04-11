@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 
 from ._version import __version__
 
@@ -20,10 +21,13 @@ def start_logging(console: bool=True):
     log_dir = os.path.join(home, 'viz-points', 'log').replace('\\', '/')
     log_loc = os.path.join(log_dir, 'pdgpoints.log').replace('\\', '/')
     os.makedirs(log_dir, exist_ok=True)
-    handler = logging.FileHandler(log_loc)
+    fh = logging.FileHandler(log_loc)
     formatter = logging.Formatter(fmt=LOG_FMT, datefmt=DATE_FMT)
-    handler.setFormatter(formatter)
-    L.addHandler(handler)
+    fh.setFormatter(formatter)
+    L.addHandler(fh)
+    sh = logging.StreamHandler(sys.stdout)
+    sh.setFormatter(formatter)
+    L.addHandler(sh)
     L.info("~~ pdgpoints version %s ~~" % (__version__))
     return L
 
