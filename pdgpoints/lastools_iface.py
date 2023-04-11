@@ -41,8 +41,8 @@ def lasinfo(f, verbose=False):
     if exitcode != 0:
         L.error('lasinfo subprocess exited with nonzero exit code--check log output')
         exit(1)
-    L.debug('WKT string: %s' % (wkt))
-    epsg = wkt.split('"')[-2]
+    L.debug('WKT string: %s' % (wkt.decode()))
+    epsg = wkt.decode().split('"')[-2]
 
     L.info('Found EPSG: %s' % (epsg))
     return epsg, wkt
