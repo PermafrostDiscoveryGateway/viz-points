@@ -1,9 +1,4 @@
 import os
-import subprocess
-from pathlib import Path
-from datetime import datetime
-
-from py3dtiles.tileset.utils import TileContentReader
 
 def make_dirs(d, exist_ok=True):
     '''

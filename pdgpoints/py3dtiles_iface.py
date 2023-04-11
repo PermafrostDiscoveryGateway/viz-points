@@ -1,8 +1,7 @@
 import os
 from py3dtiles import convert, merger
 from py3dtiles.utils import str_to_CRS
-from datetime import datetime, timedelta
-from logging import StreamHandler
+from datetime import datetime
 
 from . import L
 

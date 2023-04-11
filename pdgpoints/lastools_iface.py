@@ -1,7 +1,6 @@
 import os
 from subprocess import Popen, PIPE, STDOUT, CalledProcessError, check_output
 from datetime import datetime
-from logging import StreamHandler
 
 from .defs import LAS2LAS_LOC, LASINFO_LOC
 from . import L

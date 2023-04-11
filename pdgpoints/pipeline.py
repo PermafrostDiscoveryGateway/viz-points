@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-from logging import StreamHandler
 from threading import Thread
 
 from . import L
