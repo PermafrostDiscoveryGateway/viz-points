@@ -11,7 +11,7 @@ def make_dirs(d, exist_ok=True):
     '''
     os.makedirs(d, exist_ok=exist_ok)
 
-def log_init_stats(self):
+def log_init_stats(self, **kwargs):
     '''
     Log initialization values.
 
@@ -19,9 +19,9 @@ def log_init_stats(self):
     :param self self: The `self` object from which to extract values.
     '''
     self.L.info('File:            %s' % (self.f))
-    self.L.info('Merge on:        %s' % (self.merge))
+    self.L.info('Merge:           %s' % (self.merge))
     self.L.info('Intensity > RGB: %s' % (self.intensity_to_RGB))
-    self.L.info('Archive input:   %s' % (self.intensity_to_RGB))
+    self.L.info('Archive input:   %s' % (self.archive))
     self.L.info('Given name:      %s' % (self.given_name))
     self.L.info('File extension:  %s' % (self.ext))
     self.L.info('Verbose:         %s' % (self.L.propagate))
