@@ -1,7 +1,7 @@
 import logging
 import os
 
-from ._version import version
+from ._version import __version__
 
 def start_logging(console: bool=True):
     '''
@@ -24,7 +24,7 @@ def start_logging(console: bool=True):
     formatter = logging.Formatter(fmt=LOG_FMT, datefmt=DATE_FMT)
     handler.setFormatter(formatter)
     L.addHandler(handler)
-    L.info("~~ pdgpoints version %s ~~" % (version))
+    L.info("~~ pdgpoints version %s ~~" % (__version__))
     return L
 
 L = start_logging()

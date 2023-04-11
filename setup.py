@@ -8,7 +8,7 @@ setuptools.setup(
     author='Ian Nesbitt',
     author_email='nesbitt@nceas.ucsb.edu',
     name='pdgpoints',
-    version=_version.version,
+    version=_version.__version__,
     description='PDG point cloud staging pipeline',
     long_description=long_description,
     long_description_content_type='text/markdown',
