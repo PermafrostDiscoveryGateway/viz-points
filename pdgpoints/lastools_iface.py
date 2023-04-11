@@ -43,6 +43,8 @@ def lasinfo(f, verbose=False):
         exit(1)
     epsg = wkt.split('"')[-2]
 
+    L.info('Found EPSG: %s' % (epsg))
+    L.debug('WKT string: %s' % (wkt))
     return epsg, wkt
 
 def las2las(f,
