@@ -32,9 +32,6 @@ def cli():
             else:
                 L.error('No file at %s' % (a))
                 exit(1)
-        else:
-            print(defs.HELP_TXT)
-            exit(1)
 
     p = Pipeline(f=f,
                  intensity_to_RGB=i_to_rgb,
