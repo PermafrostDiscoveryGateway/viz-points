@@ -34,15 +34,15 @@ def lasinfo(f, verbose=False):
                     stdout=PIPE,
                     stderr=STDOUT)
 
-    wkt = check_output(('grep', 'AUTHORITY'), stdin=process.stdout)
+    wkt = check_output(('grep', 'AUTHORITY'), stdin=process.stdout).decode().strip().strip('\n')
     with process.stdout:
         log_subprocess_output(process.stdout, verbose=verbose)
     exitcode = process.wait()
     if exitcode != 0:
         L.error('lasinfo subprocess exited with nonzero exit code--check log output')
         exit(1)
-    L.debug('WKT string: %s' % (wkt.decode()))
-    epsg = wkt.decode().split('"')[-2]
+    L.debug('WKT string: %s' % (wkt))
+    epsg = wkt.split('"')[-2]
 
     L.info('Found EPSG: %s' % (epsg))
     return epsg, wkt
