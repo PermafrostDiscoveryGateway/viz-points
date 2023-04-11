@@ -5,22 +5,22 @@ from datetime import datetime
 
 from . import L
 
-def tile(f, out_dir, crs='4978', verbose=False):
+def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
     '''
     '''
     L.info('Starting tiling process for %s' % (f))
     tilestart = datetime.now()
     L.info('Creating tile directory')
     fndir = os.path.join(out_dir, os.path.splitext(os.path.basename(f))[0])
-    CRSi = str_to_CRS('4326')
-    CRSo = str_to_CRS(crs)
+    CRSi = str_to_CRS(las_crs)
+    CRSo = str_to_CRS(out_crs)
     #L.info('CRS to convert from: %s' % (CRSi))
     L.info('CRS to convert to:   %s' % (CRSo))
 
     converter = convert._Convert(files=f,
                                  outfolder=fndir,
                                  overwrite=True,
-                                 #crs_in=CRSi,
+                                 crs_in=CRSi,
                                  crs_out=CRSo,
                                  force_crs_in=True,
                                  rgb=True,

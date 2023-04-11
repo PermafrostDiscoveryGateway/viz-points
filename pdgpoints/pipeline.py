@@ -58,6 +58,9 @@ class Pipeline(Thread):
             self.L.info('Creating dir %s' % (d))
             utils.make_dirs(d)
 
+        las_crs = lastools_iface.lasinfo(f=self.f,
+                                         verbose=self.verbose)
+
         lastools_iface.las2las(f=self.f,
                                output_file=self.las_name,
                                archive_dir=self.archive_dir,
@@ -67,7 +70,8 @@ class Pipeline(Thread):
         
         py3dtiles_iface.tile(f=self.las_name,
                              out_dir=self.out_dir,
-                             crs=4978,
+                             las_crs=las_crs,
+                             out_crs='4978',
                              verbose=self.verbose)
 
         if self.merge:
