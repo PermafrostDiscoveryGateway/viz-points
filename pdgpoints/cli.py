@@ -11,6 +11,7 @@ def cli():
     Parse the command options and arguments.
     '''
 
+    verbose, i_to_rgb, merge, archive = False, False, False, False
     try:
         opts = getopt.getopt(sys.argv[1:], 'hvcmaf:',
             ['help', 'verbose', 'copy_I_to_RGB', 'merge', 'archive' 'file=']
@@ -22,10 +23,10 @@ def cli():
         if o in ('-h', '--help'):
             print(defs.HELP_TXT)
             exit(0)
-        verbose = True if o in ('-v', '--verbose') else False
-        i_to_rgb = True if o in ('-c', '--copy_I_to_RGB') else False
-        merge = True if o in ('-m', '--merge') else False
-        archive = True if o in ('-a', '--archive') else False
+        verbose = True if o in ('-v', '--verbose') else verbose
+        i_to_rgb = True if o in ('-c', '--copy_I_to_RGB') else i_to_rgb
+        merge = True if o in ('-m', '--merge') else merge
+        archive = True if o in ('-a', '--archive') else archive
         if o in ('-f', '--file'):
             if os.path.exists(a):
                 f = a
