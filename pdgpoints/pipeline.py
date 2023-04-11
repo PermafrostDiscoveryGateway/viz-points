@@ -1,13 +1,12 @@
 from pathlib import Path
 import os
-from threading import Thread
 
 from . import L
 from . import utils
 from . import lastools_iface
 from . import py3dtiles_iface
 
-class Pipeline(Thread):
+class Pipeline():
     '''
     The LiDAR processing pipeline.
     Takes input point cloud files of any type supported by lastools

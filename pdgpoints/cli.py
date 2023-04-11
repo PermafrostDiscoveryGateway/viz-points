@@ -39,4 +39,4 @@ def cli():
                  merge=merge,
                  archive=archive,
                  verbose=verbose)
-    p.start()
+    p.run()
