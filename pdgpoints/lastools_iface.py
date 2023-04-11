@@ -73,8 +73,6 @@ def las2las(f,
     :param bool intensity_to_RGB: Whether or not to copy intensity values to RGB
     :param bool verbose: Whether or not to write STDOUT (output will always be written to log file)
     '''
-    if verbose:
-        L.propagate = verbose
     las2lasstart = datetime.now()
     L.info('Using las2las to rewrite malformed VLR (e.g. from QT Modeler)... (step 1 of 3)')
     # construct command

@@ -9,7 +9,6 @@ from . import L
 def tile(f, out_dir, crs='4978', verbose=False):
     '''
     '''
-    L.propagate = verbose
     L.info('Starting tiling process for %s' % (f))
     tilestart = datetime.now()
     L.info('Creating tile directory')
@@ -36,7 +35,6 @@ def tile(f, out_dir, crs='4978', verbose=False):
 def merge(dir, overwrite: bool=False, verbose=False):
     '''
     '''
-    L.propagate = verbose
     verbosity = 2 if verbose else 0
     L.info('Starting merge process in %s' % (dir))
     mergestart = datetime.now()
