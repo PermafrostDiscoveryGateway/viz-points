@@ -32,6 +32,8 @@ class Pipeline(Thread):
         '''
         super().__init__()
         global L
+        if verbose:
+            L.setLevel('DEBUG')
         L.propagate = verbose
         self.verbose = verbose
         self.L = L
