@@ -60,7 +60,7 @@ class Pipeline(Thread):
             self.L.info('Creating dir %s' % (d))
             utils.make_dirs(d)
 
-        las_crs = lastools_iface.lasinfo(f=self.f,
+        las_crs, wkt = lastools_iface.lasinfo(f=self.f,
                                          verbose=self.verbose)
 
         lastools_iface.las2las(f=self.f,
