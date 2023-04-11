@@ -19,8 +19,10 @@ where OPTIONS := {
             merge all tilesets in the output folder (./3dtiles)
     -a | --archive
             copy original LAS files to a ./archive folder
+} REQUIRED ARG := {
     -f | --file=/path/to/file.las
             specify the path to a LAS or LAZ point cloud file
+}
 ''' % (__version__, Y)
 
 MOD_LOC = os.path.dirname(os.path.abspath(__file__))
