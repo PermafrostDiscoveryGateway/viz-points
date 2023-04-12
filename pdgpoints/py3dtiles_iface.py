@@ -25,7 +25,7 @@ def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
                                  force_crs_in=True,
                                  rgb=True,
                                  benchmark=True,
-                                 verbose=True)
+                                 verbose=verbose)
     converter.convert()
 
     tiletime = (datetime.now() - tilestart).seconds
