@@ -44,6 +44,9 @@ def lasinfo(f, verbose=False):
         L.error('lasinfo subprocess exited with nonzero exit code--check log output')
         exit(1)
     L.debug('WKT string: %s' % (wkt))
+    # wktf = str(f) + '-wkt.txt'
+    # L.info('Writing WKT to %s' % (wktf))
+    # utils.write_wkt_to_file(f=wktf, wkt=wkt)
     epsg = wkt.split('"')[-2]
     L.info('Found EPSG: %s' % (epsg))
     lasinfotime = (datetime.now() - lasinfostart).seconds
@@ -81,11 +84,12 @@ def las2las(f,
     L.info('Using las2las to rewrite malformed VLR (e.g. from QT Modeler)... (step 1 of 3)')
     # construct command
     orig_output = output_file
+    # wktf = str(f) + '-wkt.txt'
     command = [
         LAS2LAS_LOC,
         '-i', f,
         '-set_ogc_wkt', '0',
-        #'-target_epsg', out_crs,
+        #'-load_ogc_wkt', wktf,
     ]
     if intensity_to_RGB:
         # add args to copy I into attrib 0

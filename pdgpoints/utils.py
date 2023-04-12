@@ -11,6 +11,17 @@ def make_dirs(d, exist_ok=True):
     '''
     os.makedirs(d, exist_ok=exist_ok)
 
+def write_wkt_to_file(f, wkt):
+    '''
+    '''
+    os.remove(f)
+    with open(f, 'w+') as fw:
+        fw.write(str(wkt))
+
+def read_wkt_from_file(f):
+    with open(f, 'r') as fr:
+        return fr.read()
+
 def log_init_stats(self, **kwargs):
     '''
     Log initialization values.
