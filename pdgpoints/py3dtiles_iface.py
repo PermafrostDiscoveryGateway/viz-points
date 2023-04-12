@@ -7,11 +7,21 @@ from datetime import datetime
 
 from . import L
 
-def tileset_error(e):
+def log_tileset_error(e):
+    '''
+    '''
     L.error('Got "%s" error from py3dtiles.merger.merge' % (repr(e)))
     L.warning('The above error means that there was only one tileset directory '
               'in the output folder. The merged tileset could not be created.'
               'Add another tileset to allow the merge to work.')
+
+def rm_file(f):
+    '''
+    '''
+    try:
+        Path(f).unlink(missing_ok=True)
+    except FileNotFoundError as e:
+        L.warning('FileNotFoundError caught when deleting %s. This might mean nothing.' % (f))
 
 def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
     '''
@@ -49,15 +59,20 @@ def merge(dir, overwrite: bool=False, verbose=False):
 
     paths = [Path(path) for path in glob.glob(os.path.join(dir, '*', 'tileset.json'))]
     ts_path = Path(os.path.join(dir, 'tileset.json'))
+    r_path = Path(os.path.join(dir, 'r.pnts'))
+
+    if overwrite:
+        for f in [ts_path, r_path]:
+            rm_file(f)
 
     try:
         merger.merge_from_files(tileset_paths=paths,
                                 output_tileset_path=ts_path,
                                 overwrite=overwrite)
     except ValueError as e:
-        tileset_error(e)
+        log_tileset_error(e)
     except RuntimeError as e:
-        tileset_error(e)
+        log_tileset_error(e)
 
     mergetime = (datetime.now() - mergestart).seconds
     L.info('Finished merge (%s sec / %.1f min)' % (mergetime,mergetime/60))
