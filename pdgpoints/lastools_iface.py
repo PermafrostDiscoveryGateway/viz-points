@@ -133,7 +133,7 @@ def las2las(f,
             '-copy_register_into_R', '0',
             '-copy_register_into_G', '0',
             '-copy_register_into_B', '0',
-            '-set_register', '0', '0'
+            '-set_register', '0', '0',
             '-o', orig_output
         ]
         L.info('Copying intensity to register...')
