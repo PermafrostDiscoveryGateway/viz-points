@@ -24,11 +24,12 @@ def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
                                  crs_out=CRSo,
                                  force_crs_in=True,
                                  rgb=True,
-                                 benchmark=True)
+                                 benchmark=True,
+                                 verbose=True)
     converter.convert()
 
-    tiletime = (datetime.now() - tilestart).seconds/60
-    L.info('Finished tiling (%.1f min)' % (tiletime))
+    tiletime = (datetime.now() - tilestart).seconds
+    L.info('Finished tiling (%s sec / %.1f min)' % (tiletime,tiletime/60))
 
 
 def merge(dir, overwrite: bool=False, verbose=False):
@@ -38,9 +39,13 @@ def merge(dir, overwrite: bool=False, verbose=False):
     L.info('Starting merge process in %s' % (dir))
     mergestart = datetime.now()
 
-    merger.merge(folder=dir,
-                 overwrite=overwrite,
-                 verbose=verbosity)
+    try:
+        merger.merge(folder=dir,
+                     overwrite=overwrite,
+                     verbose=verbosity)
+    except ValueError as e:
+        L.error('Got "%s" error from py3dtiles.merger.merge' % (repr(e)))
+        L.warning('This likely means the merged tileset did not get created.')
 
-    mergetime = (datetime.now() - mergestart).seconds/60
-    L.info('Finished merge (%.1f min)' % (mergetime))
+    mergetime = (datetime.now() - mergestart).seconds
+    L.info('Finished merge (%s sec / %.1f min)' % (mergetime,mergetime/60))
