@@ -19,6 +19,7 @@ def rm_file(f):
     '''
     '''
     try:
+        L.info('Cleaning up previous merge artifact %s' % (f))
         Path(f).unlink(missing_ok=True)
     except FileNotFoundError as e:
         L.warning('FileNotFoundError caught when deleting %s. This might mean nothing.' % (f))
