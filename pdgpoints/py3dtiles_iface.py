@@ -14,7 +14,7 @@ def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
     fndir = os.path.join(out_dir, os.path.splitext(os.path.basename(f))[0])
     CRSi = str_to_CRS(las_crs)
     CRSo = str_to_CRS(out_crs)
-    #L.info('CRS to convert from: %s' % (CRSi))
+    L.info('CRS to convert from: %s' % (CRSi))
     L.info('CRS to convert to:   %s' % (CRSo))
 
     converter = convert._Convert(files=f,
