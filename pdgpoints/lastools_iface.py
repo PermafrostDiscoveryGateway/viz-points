@@ -4,6 +4,7 @@ from datetime import datetime
 
 from .defs import LAS2LAS_LOC, LASINFO_LOC
 from . import L
+from . import utils
 
 def log_subprocess_output(pipe, verbose=False):
     L.propagate = verbose
@@ -23,6 +24,7 @@ def lasinfo(f, verbose=False):
     :return: The EPSG code of the CRS, and CRS info as WKT
     :rtype: list[str, str]
     '''
+    lasinfostart = datetime.now()
     command = [
         LASINFO_LOC,
         '-i', f,
@@ -43,8 +45,9 @@ def lasinfo(f, verbose=False):
         exit(1)
     L.debug('WKT string: %s' % (wkt))
     epsg = wkt.split('"')[-2]
-
     L.info('Found EPSG: %s' % (epsg))
+    lasinfotime = (datetime.now() - lasinfostart).seconds
+    L.info('Finished lasinfo (%s sec / %.1f min)' % (lasinfotime, lasinfotime/60))
     return epsg, wkt
 
 def las2las(f,
@@ -77,6 +80,7 @@ def las2las(f,
     las2lasstart = datetime.now()
     L.info('Using las2las to rewrite malformed VLR (e.g. from QT Modeler)... (step 1 of 3)')
     # construct command
+    orig_output = output_file
     command = [
         LAS2LAS_LOC,
         '-i', f,
@@ -87,6 +91,9 @@ def las2las(f,
         # add args to copy I into attrib 0
         command.append('-copy_intensity_into_register')
         command.append('0')
+        # if we're doing two operations, we need two filenames
+        ofn, ofe = os.path.splitext(output_file)
+        output_file = str(ofn) + 'i' + str(ofe)
     # add args defining output file location
     command.append('-o')
     command.append(output_file)
@@ -123,6 +130,7 @@ def las2las(f,
             '-copy_register_into_G', '0',
             '-copy_register_into_B', '0',
             '-set_register', '0', '0'
+            '-o', orig_output
         ]
         L.info('Copying intensity to register...')
         L.debug('Command args: %s' % (command))
@@ -136,8 +144,14 @@ def las2las(f,
         # start subprocess
         exitcode = process.wait()
         if exitcode != 0:
-            L.error('las2las inplace attribute copy subprocess exited with nonzero exit code--check log output')
+            L.error('las2las attribute copy subprocess exited with nonzero exit code--check log output')
             exit(1)
+        # clean up
+        os.remove(output_file)
+    if archive:
+        archive_fn = os.path.join(archive_dir, os.path.split(f)[1])
+        L.info('Archiving input file to %s' % (archive_fn))
+        os.rename(f, archive_fn)
 
-    las2lastime = (datetime.now() - las2lasstart).seconds/60
-    L.info('Finished (%.1f min)' % (las2lastime))
+    las2lastime = (datetime.now() - las2lasstart).seconds
+    L.info('Finished las2las (%s sec / %.1f min)' % (las2lastime, las2lastime/60))
