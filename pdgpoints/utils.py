@@ -14,8 +14,9 @@ def make_dirs(d, exist_ok=True):
 def write_wkt_to_file(f, wkt):
     '''
     '''
-    os.remove(f)
-    with open(f, 'w+') as fw:
+    if os.path.exists(f):
+        os.remove(f)
+    with open(f, 'w') as fw:
         fw.write(str(wkt))
 
 def read_wkt_from_file(f):
