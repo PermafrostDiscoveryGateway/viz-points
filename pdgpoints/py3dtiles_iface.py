@@ -69,7 +69,8 @@ def merge(dir, overwrite: bool=False, verbose=False):
     try:
         merger.merge_from_files(tileset_paths=paths,
                                 output_tileset_path=ts_path,
-                                overwrite=overwrite)
+                                overwrite=overwrite,
+                                force_universal_merger=True)
     except ValueError as e:
         log_tileset_error(e)
     except RuntimeError as e:
