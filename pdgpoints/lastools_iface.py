@@ -1,4 +1,5 @@
 import os
+import pathlib
 from subprocess import Popen, PIPE, STDOUT, CalledProcessError, check_output
 from datetime import datetime
 
@@ -134,6 +135,7 @@ def las2las(f,
             '-copy_register_into_G', '0',
             '-copy_register_into_B', '0',
             '-set_register', '0', '0',
+            '-scale_rgb_up',
             '-o', orig_output
         ]
         L.info('Copying intensity to register...')
@@ -151,11 +153,19 @@ def las2las(f,
             L.error('las2las attribute copy subprocess exited with nonzero exit code--check log output')
             exit(1)
         # clean up
+        L.info('Cleaning up intermediate file %s' % output_file)
         os.remove(output_file)
     if archive:
-        archive_fn = os.path.join(archive_dir, os.path.split(f)[1])
+        archive_fn = os.path.join(os.getcwd(), archive_dir, os.path.split(f)[1])
+        f = pathlib.Path(os.path.join(os.getcwd(), f))
         L.info('Archiving input file to %s' % (archive_fn))
-        os.rename(f, archive_fn)
+        try:
+            f.rename(archive_fn)
+        except FileNotFoundError as e:
+            # this happens for some reason
+            # even when the process is successful
+            # ??? maybe a datateam fs problem ?
+            pass
 
     las2lastime = (datetime.now() - las2lasstart).seconds
     L.info('Finished las2las (%s sec / %.1f min)' % (las2lastime, las2lastime/60))
