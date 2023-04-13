@@ -54,7 +54,6 @@ def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
 def merge(dir, overwrite: bool=False, verbose=False):
     '''
     '''
-    verbosity = 2 if verbose else 0
     L.info('Starting merge process in %s' % (dir))
     mergestart = datetime.now()
 
