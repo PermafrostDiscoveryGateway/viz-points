@@ -12,7 +12,7 @@ def log_tileset_error(e):
     '''
     L.error('Got "%s" error from py3dtiles.merger.merge' % (repr(e)))
     L.warning('The above error means that there was only one tileset directory '
-              'in the output folder. The merged tileset could not be created.'
+              'in the output folder. The merged tileset could not be created. '
               'Add another tileset to allow the merge to work.')
 
 def rm_file(f):
