@@ -27,8 +27,8 @@ def rm_file(f):
 def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
     '''
     '''
-    L.info('Starting tiling process for %s' % (f))
     tilestart = datetime.now()
+    L.info('File: %s' (f))
     L.info('Creating tile directory')
     fndir = os.path.join(out_dir, os.path.splitext(os.path.basename(f))[0])
     CRSi = str_to_CRS(las_crs)
@@ -54,7 +54,7 @@ def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
 def merge(dir, overwrite: bool=False, verbose=False):
     '''
     '''
-    L.info('Starting merge process in %s' % (dir))
+    L.info('Output dir: %s' % dir)
     mergestart = datetime.now()
 
     paths = [Path(path) for path in glob.glob(os.path.join(dir, '*', 'tileset.json'))]
