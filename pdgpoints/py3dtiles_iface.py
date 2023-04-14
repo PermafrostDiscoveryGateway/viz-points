@@ -28,7 +28,7 @@ def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
     '''
     '''
     tilestart = datetime.now()
-    L.info('File: %s' (f))
+    L.info('File: %s' % (f))
     L.info('Creating tile directory')
     fndir = os.path.join(out_dir, os.path.splitext(os.path.basename(f))[0])
     CRSi = str_to_CRS(las_crs)
