@@ -63,7 +63,8 @@ def merge(dir, overwrite: bool=False, verbose=False):
 
     if overwrite:
         for f in [ts_path, r_path]:
-            rm_file(f)
+            if os.path.exists(f):
+                rm_file(f)
 
     try:
         merger.merge_from_files(tileset_paths=paths,
