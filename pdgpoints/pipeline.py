@@ -54,6 +54,9 @@ class Pipeline():
     def run(self):
         '''
         Process the input LAS file.
+
+        Variables:
+        :param self self:
         '''
 
         for d in [self.rewrite_dir, self.archive_dir, self.out_dir]:
