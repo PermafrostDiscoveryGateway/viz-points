@@ -26,6 +26,12 @@ def write_wkt_to_file(f, wkt):
         fw.write(str(wkt))
 
 def read_wkt_from_file(f):
+    '''
+    Read the WKT string from a file
+
+    :param f: The file to read
+    :type f: str or pathlib.Path
+    '''
     with open(f, 'r') as fr:
         return fr.read()
 
