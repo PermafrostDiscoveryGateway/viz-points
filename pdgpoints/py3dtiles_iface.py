@@ -71,9 +71,7 @@ def merge(dir, overwrite: bool=False, verbose=False):
                                 output_tileset_path=ts_path,
                                 overwrite=overwrite,
                                 force_universal_merger=True)
-    except ValueError as e:
-        log_tileset_error(e)
-    except RuntimeError as e:
+    except (RuntimeError, ValueError) as e:
         log_tileset_error(e)
 
     mergetime = (datetime.now() - mergestart).seconds
