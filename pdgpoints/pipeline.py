@@ -66,6 +66,8 @@ class Pipeline():
 
         Variables:
         :param self self:
+        :return: The path of the output directory
+        :rtype: str
         '''
 
         for d in [self.rewrite_dir, self.archive_dir, self.out_dir]:
