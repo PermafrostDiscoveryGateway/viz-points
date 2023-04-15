@@ -13,6 +13,12 @@ def make_dirs(d, exist_ok=True):
 
 def write_wkt_to_file(f, wkt):
     '''
+    Write well-known text (WKT) string to file. Will overwrite existing file.
+
+    Variables:
+    :param f: File path to write to (wil)
+    :type f: str or pathlib.Path
+    :param str wkt: String to write
     '''
     if os.path.exists(f):
         os.remove(f)
