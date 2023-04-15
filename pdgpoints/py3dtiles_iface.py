@@ -34,8 +34,18 @@ def rm_file(f):
     except FileNotFoundError as e:
         L.warning('FileNotFoundError caught when deleting %s. This might mean nothing.' % (f))
 
-def tile(f, out_dir, las_crs, out_crs='4978', verbose=False):
+def tile(f, out_dir, las_crs :str, out_crs: str='4978', verbose=False):
     '''
+    Use py3dtiles.converter.convert() to create 3dtiles from a LAS or LAZ file.
+
+    Variables:
+    :param f:
+    :type f: str or pathlib.Path
+    :param out_dir:
+    :type f: str or pathlib.Path
+    :param str las_crs:
+    :param str out_crs:
+    :param bool verbose:
     '''
     tilestart = datetime.now()
     L.info('File: %s' % (f))
