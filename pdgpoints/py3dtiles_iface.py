@@ -25,7 +25,7 @@ def rm_file(f):
     Remove a file.
 
     Variables:
-    :param f:
+    :param f: File to remove
     :type f: str or pathlib.Path
     '''
     try:
@@ -39,13 +39,13 @@ def tile(f, out_dir, las_crs :str, out_crs: str='4978', verbose=False):
     Use py3dtiles.converter.convert() to create 3dtiles from a LAS or LAZ file.
 
     Variables:
-    :param f:
+    :param f: LAS or LAZ file to convert to 3dtiles
     :type f: str or pathlib.Path
-    :param out_dir:
+    :param out_dir: The output directory to store 3dtiles subdirectory in
     :type f: str or pathlib.Path
-    :param str las_crs:
-    :param str out_crs:
-    :param bool verbose:
+    :param str las_crs: Coordinate reference system (CRS) of the input LAS file
+    :param str out_crs: CRS of the output tileset
+    :param bool verbose: Whether to log more messages
     '''
     tilestart = datetime.now()
     L.info('File: %s' % (f))
