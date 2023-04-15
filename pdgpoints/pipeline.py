@@ -13,11 +13,12 @@ class Pipeline():
     and outputs 3dtiles files.
 
     Variables:
-    :param f: The file to process
+    :param f: The LAS file to process
     :type f: str or pathlib.Path
-    :param bool merge: Whether or not to merge with existing datasets in the output location (default: True)
-    :return: Processed data location
-    :rtype: str
+    :param bool merge: Whether to use py3dtiles.merger.merge() to incorporate the processed dataset into an existing set of 3dtiles datasets
+    :param bool intensity_to_RGB: Whether to copy intensity values to RGB (straight copy I->R I->G I->B, so will show up as greyscale)
+    :param bool archive: Archive the input dataset to `./archive` directory
+    :param bool verbose: Whether to log more messages
     '''
 
     def __init__(self,
@@ -25,9 +26,17 @@ class Pipeline():
                  merge: bool=True,
                  intensity_to_RGB: bool=False,
                  archive: bool=False,
-                 verbose=True):
+                 verbose: bool=True):
         '''
         Initialize the processing pipeline.
+
+        :param self self:
+        :param f: The LAS file to process
+        :type f: str or pathlib.Path
+        :param bool merge: Whether to use py3dtiles.merger.merge() to incorporate the processed dataset into an existing set of 3dtiles datasets
+        :param bool intensity_to_RGB: Whether to copy intensity values to RGB (straight copy I->R I->G I->B, so will show up as greyscale)
+        :param bool archive: Archive the input dataset to `./archive` directory
+        :param bool verbose: Whether to log more messages
         '''
         super().__init__()
         global L
