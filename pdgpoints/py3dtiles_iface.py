@@ -22,6 +22,11 @@ def log_tileset_error(e):
 
 def rm_file(f):
     '''
+    Remove a file.
+
+    Variables:
+    :param f:
+    :type f: str or pathlib.Path
     '''
     try:
         L.info('Cleaning up previous merge artifact %s' % (f))
