@@ -73,6 +73,16 @@ def tile(f, out_dir, las_crs :str, out_crs: str='4978', verbose=False):
 
 def merge(dir, overwrite: bool=False, verbose=False):
     '''
+    Use py3dtiles.merger.merge() to merge more than one 3dtiles dataset.
+    This function will search for `tileset.json` files in subdirectories
+    of the input directory (e.g. `input_dir/ds1/tileset.json`,
+    `input_dir/ds2/tileset.json`)
+
+    Variables:
+    :param dir: Directory to search for tileset subdirectories in
+    :type dir: pathlib.Path
+    :param bool overwrite: Whether to overwrite existing mergers in the output directory (default: False)
+    :param bool verbose: Whether to log more messages
     '''
     L.info('Output dir: %s' % dir)
     mergestart = datetime.now()
