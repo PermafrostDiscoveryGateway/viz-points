@@ -8,6 +8,12 @@ from . import L
 from . import utils
 
 def log_subprocess_output(pipe, verbose=False):
+    '''
+    Log the output from a lastools subprocess.
+
+    :param subprocess.PIPE pipe: The pipe to listen to
+    :param bool verbose: Whether to log more messages 
+    '''
     L.propagate = verbose
     try:
         for line in iter(pipe.readline, b''): # b'\n'-separated lines
