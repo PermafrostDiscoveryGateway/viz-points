@@ -9,6 +9,11 @@ from . import L
 
 def log_tileset_error(e):
     '''
+    Log the error py3dtiles throws when the user tries to merge a single dataset.
+
+    Variables:
+    :param e: Error object
+    :type e: ValueError or RuntimeError
     '''
     L.error('Got "%s" error from py3dtiles.merger.merge' % (repr(e)))
     L.warning('The above error means that there was only one tileset directory '
