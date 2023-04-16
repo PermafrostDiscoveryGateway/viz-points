@@ -29,6 +29,7 @@ def read_wkt_from_file(f):
     '''
     Read the WKT string from a file
 
+    Variables:
     :param f: The file to read
     :type f: str or pathlib.Path
     '''

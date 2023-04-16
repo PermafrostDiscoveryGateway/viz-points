@@ -11,6 +11,7 @@ def log_subprocess_output(pipe, verbose=False):
     '''
     Log the output from a lastools subprocess.
 
+    Variables:
     :param subprocess.PIPE pipe: The pipe to listen to
     :param bool verbose: Whether to log more messages 
     '''
@@ -25,6 +26,7 @@ def run_proc(command, get_wkt: bool=False, verbose: bool=False):
     '''
     Start a subprocess with a given command.
 
+    Variables:
     :param list command: List of command arguments
     :param bool get_wkt: Whether to grep the well-known text (WKT) string from lasinfo output
     :param bool verbose: Whether to log more messages
