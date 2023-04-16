@@ -35,7 +35,7 @@ def read_wkt_from_file(f):
     with open(f, 'r') as fr:
         return fr.read()
 
-def log_init_stats(self, **kwargs):
+def log_init_stats(self):
     '''
     Log initialization values.
 
