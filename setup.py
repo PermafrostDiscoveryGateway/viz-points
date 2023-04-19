@@ -19,6 +19,7 @@ setuptools.setup(
     entry_points = {
         'console_scripts': [
             'tilepoints=pdgpoints.cli:cli',
+            'tilepoints-test=pdgpoints.test:test'
         ],
     },
     python_requires='>=3.9, <4.0',
