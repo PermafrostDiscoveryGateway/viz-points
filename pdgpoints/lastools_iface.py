@@ -162,7 +162,6 @@ def las2las(f,
         command = [
             LAS2LAS_LOC,
             '-i', f,
-            '-set_ogc_wkt', '0',
             '-load_ogc_wkt', wktf,
             '-o', output_file
         ]
