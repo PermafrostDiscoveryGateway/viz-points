@@ -75,6 +75,31 @@ def lasinfo(f, verbose: bool=False):
     L.info('Finished lasinfo (%s sec / %.1f min)' % (lasinfotime, lasinfotime/60))
     return epsg, wkt
 
+def las2las_ogc_wkt(f,
+                    output_file,
+                    verbose: bool=False):
+    '''
+    Use las2las to write CRS info in OGC WKT format to the output file.
+
+    Variables:
+    :param f: The input file
+    :type f: str or pathlib.Path
+    :param output_file: The output file
+    :type output_file: str or pathlib.Path
+    :param bool verbose: Whether or not to write STDOUT (output will always be written to log file)
+    '''
+    las2lasstart = datetime.now()
+    # construct command
+    command = [
+            LAS2LAS_LOC,
+            '-i', f,
+            '-set_ogc_wkt',
+            '-o', output_file
+        ]
+    run_proc(command=command, verbose=verbose)
+    las2lastime = (datetime.now() - las2lasstart).seconds
+    L.info('Finished las2las (%s sec / %.1f min)' % (las2lastime, las2lastime/60))
+
 def las2las(f,
             output_file,
             #out_crs: str='4326',

@@ -49,6 +49,7 @@ class Pipeline():
         self.f = Path(f)
         self.base_dir, self.bn = os.path.split(self.f)
         self.given_name, self.ext = os.path.splitext(self.bn)
+        self.ogcwkt_name = os.path.join(self.base_dir, '%s-wkt.%s' (self.given_name, self.ext))
         self.rewrite_dir = os.path.join(self.base_dir, 'rewrite')
         self.archive_dir = os.path.join(self.base_dir, 'archive')
         self.out_dir = os.path.join(self.base_dir, '3dtiles')
@@ -56,7 +57,7 @@ class Pipeline():
         self.intensity_to_RGB = intensity_to_RGB
         self.archive = archive
         self.merge = merge
-        self.steps = 4 if merge else 3
+        self.steps = 5 if merge else 4
         utils.log_init_stats(self)
 
 
@@ -74,19 +75,24 @@ class Pipeline():
             self.L.info('Creating dir %s' % (d))
             utils.make_dirs(d)
 
-        L.info('Starting lasinfo dump... (step 1 of %s)' % (self.steps))
-        las_crs, wkt = lastools_iface.lasinfo(f=self.f,
-                                         verbose=self.verbose)
+        L.info('Rewriting file with new OGC WKT... (step 1 of %s)' % (self.steps))
+        lastools_iface.las2las_ogc_wkt(f=self.f,
+                                       output_file=self.ogcwkt_name,
+                                       verbose=self.verbose)
 
-        L.info('Starting las2las rewrite... (step 2 of %s)' % (self.steps))
-        lastools_iface.las2las(f=self.f,
+        L.info('Doing lasinfo dump... (step 2 of %s)' % (self.steps))
+        las_crs, wkt = lastools_iface.lasinfo(f=self.ogcwkt_name,
+                                              verbose=self.verbose)
+
+        L.info('Starting las2las rewrite... (step 3 of %s)' % (self.steps))
+        lastools_iface.las2las(f=self.ogcwkt_name,
                                output_file=self.las_name,
                                archive_dir=self.archive_dir,
                                intensity_to_RGB=self.intensity_to_RGB,
                                archive=self.archive,
                                verbose=self.verbose)
 
-        L.info('Starting tiling process (step 3 of %s)' % (self.steps))
+        L.info('Starting tiling process... (step 4 of %s)' % (self.steps))
         py3dtiles_iface.tile(f=self.las_name,
                              out_dir=self.out_dir,
                              las_crs=las_crs,
@@ -94,7 +100,7 @@ class Pipeline():
                              verbose=self.verbose)
 
         if self.merge:
-            L.info('Starting merge process... (step 4 of %s)' % (self.steps))
+            L.info('Starting merge process... (step 5 of %s)' % (self.steps))
             py3dtiles_iface.merge(dir=self.out_dir,
                                   overwrite=True,
                                   verbose=self.verbose)
