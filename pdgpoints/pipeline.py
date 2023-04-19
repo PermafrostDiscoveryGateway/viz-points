@@ -49,7 +49,7 @@ class Pipeline():
         self.f = Path(f).absolute()
         self.base_dir, self.bn = os.path.split(self.f)
         self.given_name, self.ext = os.path.splitext(self.bn)
-        self.ogcwkt_name = os.path.join(self.base_dir, '%s-wkt.%s' % (self.given_name, self.ext))
+        self.ogcwkt_name = os.path.join(self.base_dir, '%s-wkt.laz' % (self.given_name))
         self.rewrite_dir = os.path.join(self.base_dir, 'rewrite')
         self.archive_dir = os.path.join(self.base_dir, 'archive')
         self.out_dir = os.path.join(self.base_dir, '3dtiles')
