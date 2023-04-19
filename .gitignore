@@ -1,7 +1,7 @@
 # Test artifacts
 pdgpoints/testdata/lp_jumps.laz
 pdgpoints/testdata/tileset.json
-pdgpoints/testdata/*.txt
+pdgpoints/testdata/*[.txt|.zip]
 pdgpoints/testdata/*/
 
 # Byte-compiled / optimized / DLL files
