@@ -1,7 +1,7 @@
 from .pipeline import Pipeline
 
-def test(f=['testdata/lp_jumps_e.laz',
-            'testdata/lp_jumps_w.laz'],
+def test(f=['pdgpoints/testdata/lp_jumps_e.laz',
+            'pdgpoints/testdata/lp_jumps_w.laz'],
             verbose=True):
     merge = False
     for l in f:
