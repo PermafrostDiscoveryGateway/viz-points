@@ -46,6 +46,7 @@ def log_init_stats(self):
     self.L.info('File:            %s' % (self.f))
     self.L.info('Merge:           %s' % (self.merge))
     self.L.info('Intensity > RGB: %s' % (self.intensity_to_RGB))
+    self.L.info('Intens. scalar:  %s' % (self.rgb_scale))
     self.L.info('Archive input:   %s' % (self.archive))
     self.L.info('Given name:      %s' % (self.given_name))
     self.L.info('File extension:  %s' % (self.ext))

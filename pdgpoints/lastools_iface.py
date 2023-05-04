@@ -106,6 +106,7 @@ def las2las(f,
             archive_dir='',
             archive: bool=False,
             intensity_to_RGB: bool=False,
+            rgb_scale: float=1.0,
             verbose=False):
     '''
     Simple wrapper around las2las to repair and rework LAS files.
@@ -137,6 +138,7 @@ def las2las(f,
         read_command = [
             LAS2LAS_LOC,
             '-i', f,
+            '-scale_intensity', '%s' % (rgb_scale),
             '-otxt',
             '-oparse', 'xyziiiitanr',
             '-stdout'
