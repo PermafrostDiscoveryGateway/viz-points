@@ -15,7 +15,7 @@ setuptools.setup(
     url='https://github.com/PermafrostDiscoveryGateway/viz-points',
     packages=setuptools.find_packages(),
     include_package_data=True,
-    install_requires=['py3dtiles'],
+    install_requires=['py3dtiles', 'pdal'],
     entry_points = {
         'console_scripts': [
             'tilepoints=pdgpoints.cli:cli',
