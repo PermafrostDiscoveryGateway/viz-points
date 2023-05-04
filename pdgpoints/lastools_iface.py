@@ -62,6 +62,7 @@ def lasinfo(f, verbose: bool=False):
     command = [
         LASINFO_LOC,
         '-i', f,
+        '-nc', # shaves a lot of time off large jobs by telling lasinfo not to compute min/maxes
         '-stdout',
     ]
     wkt = run_proc(command=command, get_wkt=True, verbose=verbose)
