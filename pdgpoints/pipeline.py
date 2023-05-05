@@ -26,6 +26,7 @@ class Pipeline():
                  merge: bool=True,
                  intensity_to_RGB: bool=False,
                  rgb_scale=False,
+                 translate_z=False,
                  archive: bool=False,
                  verbose: bool=True):
         '''
@@ -57,7 +58,8 @@ class Pipeline():
         self.out_dir = os.path.join(self.base_dir, '3dtiles')
         self.las_name = os.path.join(self.rewrite_dir, '%s.las' % (self.given_name))
         self.intensity_to_RGB = intensity_to_RGB
-        self.rgb_scale = float(rgb_scale) if rgb_scale else 1
+        self.rgb_scale = float(rgb_scale) if rgb_scale else 1.
+        self.translate_z = float(translate_z) if translate_z else 0.
         self.archive = archive
         self.merge = merge
         self.steps = 5 if merge else 4
@@ -94,6 +96,7 @@ class Pipeline():
                                intensity_to_RGB=self.intensity_to_RGB,
                                archive=self.archive,
                                rgb_scale=self.rgb_scale,
+                               translate_z=self.translate_z,
                                verbose=self.verbose)
 
         L.info('Starting tiling process... (step 4 of %s)' % (self.steps))

@@ -140,6 +140,7 @@ def las2las(f,
             LAS2LAS_LOC,
             '-i', f,
             '-scale_intensity', '%s' % (rgb_scale),
+            '-translate_z', '%s' % (translate_z),
             '-otxt',
             '-oparse', 'xyziiiitanr',
             '-stdout'
