@@ -5,7 +5,7 @@ from py3dtiles import convert, merger
 from py3dtiles.utils import str_to_CRS
 from datetime import datetime
 
-from . import L
+from . import L, utils
 
 def log_tileset_error(e):
     '''
@@ -47,7 +47,7 @@ def tile(f, out_dir, las_crs :str, out_crs: str='4978', verbose=False):
     :param str out_crs: CRS of the output tileset
     :param bool verbose: Whether to log more messages
     '''
-    tilestart = datetime.now()
+    tilestart = utils.timer()
     L.info('File: %s' % (f))
     L.info('Creating tile directory')
     fndir = os.path.join(out_dir, os.path.splitext(os.path.basename(f))[0])
@@ -67,8 +67,7 @@ def tile(f, out_dir, las_crs :str, out_crs: str='4978', verbose=False):
                                  verbose=verbose)
     converter.convert()
 
-    tiletime = (datetime.now() - tilestart).seconds
-    L.info('Finished tiling (%s sec / %.1f min)' % (tiletime,tiletime/60))
+    L.info('Finished tiling (%s sec / %.1f min)' % utils.timer(tilestart))
 
 
 def merge(dir, overwrite: bool=False, verbose=False):
@@ -85,7 +84,7 @@ def merge(dir, overwrite: bool=False, verbose=False):
     :param bool verbose: Whether to log more messages
     '''
     L.info('Output dir: %s' % dir)
-    mergestart = datetime.now()
+    mergestart = utils.timer()
 
     paths = [Path(path) for path in glob.glob(os.path.join(dir, '*', 'tileset.json'))]
     ts_path = Path(os.path.join(dir, 'tileset.json'))
@@ -104,5 +103,4 @@ def merge(dir, overwrite: bool=False, verbose=False):
     except (RuntimeError, ValueError) as e:
         log_tileset_error(e)
 
-    mergetime = (datetime.now() - mergestart).seconds
-    L.info('Finished merge (%s sec / %.1f min)' % (mergetime,mergetime/60))
+    L.info('Finished merge (%s sec / %.1f min)' % utils.timer(mergestart))

@@ -41,6 +41,7 @@ class Pipeline():
         '''
         super().__init__()
         global L
+        self.starttime = utils.timer()
         if verbose:
             L.setLevel('DEBUG')
         L.propagate = verbose
@@ -114,5 +115,8 @@ class Pipeline():
             files.append(self.las_name)
         L.debug('Removing files: %s' % (files))
         utils.rm_files(files=files)
+
+        s, m = utils.timer(self.starttime)
+        L.info('Finished processing %s (%s sec / %.1f min)' % (self.bn, s, m))
 
         return str(self.out_dir)

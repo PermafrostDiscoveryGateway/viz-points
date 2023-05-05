@@ -58,7 +58,7 @@ def lasinfo(f, verbose: bool=False):
     :return: The EPSG code of the CRS, and CRS info as WKT
     :rtype: list[str, str]
     '''
-    lasinfostart = datetime.now()
+    lasinfostart = utils.timer()
     command = [
         LASINFO_LOC,
         '-i', f,
@@ -72,8 +72,7 @@ def lasinfo(f, verbose: bool=False):
     utils.write_wkt_to_file(f=wktf, wkt=wkt)
     epsg = wkt.split('"')[-2]
     L.info('Found EPSG: %s' % (epsg))
-    lasinfotime = (datetime.now() - lasinfostart).seconds
-    L.info('Finished lasinfo (%s sec / %.1f min)' % (lasinfotime, lasinfotime/60))
+    L.info('Finished lasinfo (%s sec / %.1f min)' % utils.timer(lasinfostart))
     return epsg, wkt, wktf
 
 def las2las_ogc_wkt(f,

@@ -1,4 +1,22 @@
 import os
+from datetime import datetime
+
+def timer(time=False):
+    '''
+    Start a timer if no argument is supplied, otherwise stop it and report the seconds and minutes elapsed.
+
+    Variables:
+    :param pathlib.Path d: The directory to create
+
+    Returns:
+    :return: If no time is supplied, return start time; else return elapsed time in seconds and decimal minutes
+    :rtype: datetime.datetime or (int, float)
+    '''
+    if not time:
+        return datetime.now()
+    else:
+        time = (datetime.now() - time).seconds
+        return time, time/60
 
 def make_dirs(d, exist_ok=True):
     '''
