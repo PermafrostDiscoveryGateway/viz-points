@@ -74,7 +74,7 @@ def lasinfo(f, verbose: bool=False):
     L.info('Found EPSG: %s' % (epsg))
     lasinfotime = (datetime.now() - lasinfostart).seconds
     L.info('Finished lasinfo (%s sec / %.1f min)' % (lasinfotime, lasinfotime/60))
-    return epsg, wkt
+    return epsg, wkt, wktf
 
 def las2las_ogc_wkt(f,
                     output_file,
@@ -108,6 +108,7 @@ def las2las(f,
             archive: bool=False,
             intensity_to_RGB: bool=False,
             rgb_scale: float=1.0,
+            translate_z: float=0.0,
             verbose=False):
     '''
     Simple wrapper around las2las to repair and rework LAS files.
@@ -166,6 +167,7 @@ def las2las(f,
             LAS2LAS_LOC,
             '-i', f,
             '-load_ogc_wkt', wktf,
+            '-translate_z', '%s' % (translate_z),
             '-o', output_file
         ]
         run_proc(command=command, verbose=verbose)

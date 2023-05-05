@@ -83,7 +83,7 @@ class Pipeline():
                                        verbose=self.verbose)
 
         L.info('Doing lasinfo dump... (step 2 of %s)' % (self.steps))
-        las_crs, wkt = lastools_iface.lasinfo(f=self.ogcwkt_name,
+        las_crs, wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name,
                                               verbose=self.verbose)
 
         L.info('Starting las2las rewrite... (step 3 of %s)' % (self.steps))
@@ -107,5 +107,12 @@ class Pipeline():
             py3dtiles_iface.merge(dir=self.out_dir,
                                   overwrite=True,
                                   verbose=self.verbose)
+
+        L.info('Cleaning up processing artifacts.')
+        files = [self.ogcwkt_name, wktf]
+        if not self.archive:
+            files.append(self.las_name)
+        L.debug('Removing files: %s' % (files))
+        utils.rm_files(files=files)
 
         return str(self.out_dir)

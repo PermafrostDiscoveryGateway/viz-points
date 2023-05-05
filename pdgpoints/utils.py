@@ -11,6 +11,16 @@ def make_dirs(d, exist_ok=True):
     '''
     os.makedirs(d, exist_ok=exist_ok)
 
+def rm_files(files: list=[]):
+    '''
+    Remove a list of intermediate processing files.
+
+    Variables:
+    :param list files: The list of strings or `pathlib.Path`s to remove
+    '''
+    for f in files:
+        os.remove(f)
+
 def write_wkt_to_file(f, wkt):
     '''
     Write well-known text (WKT) string to file. Will overwrite existing file.
