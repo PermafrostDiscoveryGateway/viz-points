@@ -38,7 +38,8 @@ def rm_files(files: list=[]):
     :param list files: The list of strings or `pathlib.Path`s to remove
     '''
     for f in files:
-        os.remove(f)
+        if os.path.exists(f):
+            os.remove(f)
 
 def write_wkt_to_file(f, wkt):
     '''
