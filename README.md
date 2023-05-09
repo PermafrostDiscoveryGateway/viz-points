@@ -15,6 +15,21 @@ Requirements:
 Visualization requirements:
 - A tool that can display 3dtiles data, such as [Cesium](https://cesium.com)
 
+### Unix installation example
+
+Remember to set up and activate your virtual environment before proceeding.
+
+```bash
+# install Oslandia py3dtiles
+pip install git+https://gitlab.com/Oslandia/py3dtiles.git@68cdcd9080994d38614d3aa5db75cea2456298cf
+# get and install this software
+git clone https://github.com/PermafrostDiscoveryGateway/viz-points.git
+cd viz-points
+pip install .
+# test your installation
+tilepoints-test
+```
+
 ## Usage
 
 This software is designed to be used either as a command line tool or as a Python package.
