@@ -21,6 +21,7 @@ def test(f=[E, W],
                      intensity_to_RGB=True,
                      merge=merge,
                      archive=True,
+                     rgb_scale=2.0,
                      verbose=verbose)
         p.run()
         merge = True
