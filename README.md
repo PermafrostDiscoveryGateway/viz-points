@@ -25,6 +25,8 @@ pip install git+https://gitlab.com/Oslandia/py3dtiles.git@68cdcd9080994d38614d3a
 # get and install this software
 git clone https://github.com/PermafrostDiscoveryGateway/viz-points.git
 cd viz-points
+# checkout the development branch if necessary
+git checkout develop
 pip install .
 # test your installation
 tilepoints-test
