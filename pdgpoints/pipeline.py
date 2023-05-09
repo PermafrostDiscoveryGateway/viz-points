@@ -37,6 +37,10 @@ class Pipeline():
         :type f: str or pathlib.Path
         :param bool merge: Whether to use py3dtiles.merger.merge() to incorporate the processed dataset into an existing set of 3dtiles datasets
         :param bool intensity_to_RGB: Whether to copy intensity values to RGB (straight copy I->R I->G I->B, so will show up as greyscale)
+        :param rgb_scale: Scale multiplier for RGB values
+        :type rgb_scale: bool or float
+        :param translate_z: Float translation for z values
+        :type translate_z: bool or float
         :param bool archive: Archive the input dataset to `./archive` directory
         :param bool verbose: Whether to log more messages
         '''

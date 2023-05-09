@@ -6,7 +6,8 @@ def timer(time=False):
     Start a timer if no argument is supplied, otherwise stop it and report the seconds and minutes elapsed.
 
     Variables:
-    :param pathlib.Path d: The directory to create
+    :param time: The directory to create
+    :type time: bool or datetime.datetime
 
     Returns:
     :return: If no time is supplied, return start time; else return elapsed time in seconds and decimal minutes

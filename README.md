@@ -9,11 +9,62 @@ Python package for post-processing point-cloud data for 3D visualization
 ## Installation
 
 Requirements:
-- [py3dtiles](https://gitlab.com/oslandia/py3dtiles) (Oslandia or [PDG version](https://github.com/PermafrostDiscoveryGateway/py3dtiles))
-- rapidlasso [las2las](https://rapidlasso.com/lastools/las2las/) post-November 2022 (rapidlasso [precompiled Windows](https://github.com/LAStools/LAStools/blob/master/README.md#links) or included [linux binary](https://rapidlasso.de/release-of-lastoolslinux/))
+- [py3dtiles](https://gitlab.com/oslandia/py3dtiles) (Oslandia versions after [522ce61a](https://gitlab.com/Oslandia/py3dtiles/-/blob/522ce61a0c2cbeb496ba4862e14477bb941b23a3/py3dtiles/merger.py))
+- rapidlasso [las2las](https://rapidlasso.com/lastools/las2las/) and [lasinfo](https://rapidlasso.com/lastools/lasinfo/) post-November 2022 (rapidlasso [precompiled Windows](https://github.com/LAStools/LAStools/blob/master/README.md#links) or included [linux binary](https://rapidlasso.de/release-of-lastoolslinux/))
 
 Visualization requirements:
 - A tool that can display 3dtiles data, such as [Cesium](https://cesium.com)
+
+## Usage
+
+This software is designed to be used either as a command line tool or as a Python package.
+
+### Command line usage
+
+**Command syntax:**
+```
+tilepoints [ OPTIONS ] -f /path/to/file.las
+```
+
+**Required argument:**
+```
+    -f file.las | --file=/path/to/file.las
+            specify the path to a LAS or LAZ point cloud file
+```
+
+**Options:**
+```
+    -h | --help
+            display the help message
+    -v | --verbose
+            display more informational messages
+    -c | --copy_I_to_RGB
+            copy intensity values to RGB channels
+    -m | --merge
+            merge all tilesets in the output folder (./3dtiles)
+    -a | --archive
+            copy original LAS files to a ./archive folder
+    -s X | --rgb_scale=X
+            scale RGB values by X amount
+    -z X | --translate_z=X
+            translate Z (elevation) values by X amount
+```
+
+### Python usage
+
+**Python example:**
+```python
+from pdgpoints.pipeline import Pipeline
+
+p = Pipeline(f='/path/to/file.laz',
+             intensity_to_RGB=True,
+             merge=True,
+             archive=False,
+             rgb_scale=4.0,
+             translate_z=-8.3,
+             verbose=False)
+p.run()
+```
 
 ### Visualizing the data in Cesium
 

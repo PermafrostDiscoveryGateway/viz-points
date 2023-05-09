@@ -19,8 +19,12 @@ where OPTIONS := {
             merge all tilesets in the output folder (./3dtiles)
     -a | --archive
             copy original LAS files to a ./archive folder
+    -s X | --rgb_scale=X
+            scale RGB values by X amount
+    -z X | --translate_z=X
+            translate Z (elevation) values by X amount
 } REQUIRED ARG := {
-    -f | --file=/path/to/file.las
+    -f file.las | --file=/path/to/file.las
             specify the path to a LAS or LAZ point cloud file
 }
 ''' % (__version__, Y)

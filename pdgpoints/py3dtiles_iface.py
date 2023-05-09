@@ -42,7 +42,7 @@ def tile(f, out_dir, las_crs :str, out_crs: str='4978', verbose=False):
     :param f: LAS or LAZ file to convert to 3dtiles
     :type f: str or pathlib.Path
     :param out_dir: The output directory to store 3dtiles subdirectory in
-    :type f: str or pathlib.Path
+    :type out_dir: str or pathlib.Path
     :param str las_crs: Coordinate reference system (CRS) of the input LAS file
     :param str out_crs: CRS of the output tileset
     :param bool verbose: Whether to log more messages

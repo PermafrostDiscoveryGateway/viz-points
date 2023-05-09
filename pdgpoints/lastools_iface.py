@@ -30,6 +30,9 @@ def run_proc(command, get_wkt: bool=False, verbose: bool=False):
     :param list command: List of command arguments
     :param bool get_wkt: Whether to grep the well-known text (WKT) string from lasinfo output
     :param bool verbose: Whether to log more messages
+
+    :return: Well-known text (WKT) of the file's coordinate reference system (CRS)
+    :rtype: str
     '''
     L.debug('Command args: %s' % (command))
     process = Popen(command,
@@ -55,8 +58,9 @@ def lasinfo(f, verbose: bool=False):
     Variables:
     :param f: The input file
     :type f: str or pathlib.Path
+
     :return: The EPSG code of the CRS, and CRS info as WKT
-    :rtype: list[str, str]
+    :rtype: str, str, str
     '''
     lasinfostart = utils.timer()
     command = [
@@ -127,6 +131,8 @@ def las2las(f,
     :type output_file: str or pathlib.Path
     :param bool archive: Whether or not to archive input files
     :param bool intensity_to_RGB: Whether or not to copy intensity values to RGB
+    :param float rgb_scale: RGB scale multiplier
+    :param float translate_z: Z translation value
     :param bool verbose: Whether or not to write STDOUT (output will always be written to log file)
     '''
     las2lasstart = datetime.now()
