@@ -137,7 +137,6 @@ def las2las(f,
     '''
     las2lasstart = datetime.now()
     # construct command
-    orig_output = output_file
     wktf = str(f) + '-wkt.txt'
 
     if intensity_to_RGB:
