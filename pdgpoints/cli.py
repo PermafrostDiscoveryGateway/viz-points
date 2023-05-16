@@ -25,8 +25,8 @@ def cli():
             exit(0)
         verbose = True if o in ('-v', '--verbose') else verbose
         i_to_rgb = True if o in ('-c', '--copy_I_to_RGB') else i_to_rgb
-        rgb_scale = float(a) if o in ('-s', '--rgb_scale') else rgb_scale
-        translate_z = float(a) if o in ('-z', '--translate_z') else translate_z
+        rgb_scale = a if o in ('-s', '--rgb_scale') else rgb_scale
+        translate_z = a if o in ('-z', '--translate_z') else translate_z
         merge = True if o in ('-m', '--merge') else merge
         archive = True if o in ('-a', '--archive') else archive
         if o in ('-f', '--file'):

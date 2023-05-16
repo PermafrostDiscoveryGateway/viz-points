@@ -62,8 +62,16 @@ class Pipeline():
         self.out_dir = os.path.join(self.base_dir, '3dtiles')
         self.las_name = os.path.join(self.rewrite_dir, '%s.las' % (self.given_name))
         self.intensity_to_RGB = intensity_to_RGB
-        self.rgb_scale = float(rgb_scale) if rgb_scale else 1.
-        self.translate_z = float(translate_z) if translate_z else 0.
+        try:
+            self.rgb_scale = float(rgb_scale) if rgb_scale else 1.
+        except ValueError:
+            self.L.warning('Could not convert RGB scale value to float. Not scaling RGB values.')
+            self.rgb_scale = 1.
+        try:
+            self.translate_z = float(translate_z) if translate_z else 0.
+        except ValueError:
+            self.L.warning('Could not convert Z-translation value to float. Not translating Z values.')
+            self.translate_z = 0.
         self.archive = archive
         self.merge = merge
         self.steps = 5 if merge else 4
