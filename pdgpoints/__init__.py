@@ -25,9 +25,10 @@ def start_logging(console: bool=True):
     formatter = logging.Formatter(fmt=LOG_FMT, datefmt=DATE_FMT)
     fh.setFormatter(formatter)
     L.addHandler(fh)
-    sh = logging.StreamHandler(sys.stdout)
-    sh.setFormatter(formatter)
-    L.addHandler(sh)
+    if console:
+        sh = logging.StreamHandler(sys.stdout)
+        sh.setFormatter(formatter)
+        L.addHandler(sh)
     L.info("~~ pdgpoints version %s ~~" % (__version__))
     return L
 
