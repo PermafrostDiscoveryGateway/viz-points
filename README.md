@@ -8,7 +8,11 @@ Python package for post-processing point-cloud data for 3D visualization
 
 ## Installation
 
-Requirements:
+### Hardware requirements
+This software requires an x86_64 architecture and a Linux environment.
+
+### Software requirements
+- [pdal](https://github.com/PDAL/python) (pip installation may not build...if so use [anaconda](https://anaconda.org/) or [miniconda](https://repo.anaconda.com/miniconda/))
 - [py3dtiles](https://gitlab.com/oslandia/py3dtiles) (Oslandia versions after [522ce61a](https://gitlab.com/Oslandia/py3dtiles/-/blob/522ce61a0c2cbeb496ba4862e14477bb941b23a3/py3dtiles/merger.py))
 - rapidlasso [las2las](https://rapidlasso.com/lastools/las2las/) and [lasinfo](https://rapidlasso.com/lastools/lasinfo/) post-November 2022 (rapidlasso [precompiled Windows](https://github.com/LAStools/LAStools/blob/master/README.md#links) or included [linux binary](https://rapidlasso.de/release-of-lastoolslinux/))
 
@@ -20,6 +24,10 @@ Visualization requirements:
 Remember to set up and activate your virtual environment before proceeding.
 
 ```bash
+# use conda to set up environment
+conda create -n viz-points python=3.9
+conda activate viz-points
+conda install -c conda-forge pdal
 # install Oslandia py3dtiles
 pip install git+https://gitlab.com/Oslandia/py3dtiles.git@68cdcd9080994d38614d3aa5db75cea2456298cf
 # get and install this software
