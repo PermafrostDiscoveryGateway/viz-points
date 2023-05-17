@@ -1,6 +1,5 @@
 from pathlib import Path
 from typing import Union, Literal
-import os
 
 from . import L
 from . import utils
