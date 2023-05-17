@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import sys
 import getopt
 
@@ -30,13 +30,12 @@ def cli():
         merge = True if o in ('-m', '--merge') else merge
         archive = True if o in ('-a', '--archive') else archive
         if o in ('-f', '--file'):
-            if os.path.exists(a):
-                f = a
-            else:
+            p = Path(a)
+            if not p.is_file():
                 L.error('No file at %s' % (a))
                 exit(1)
 
-    p = Pipeline(f=f,
+    p = Pipeline(f=p,
                  intensity_to_RGB=i_to_rgb,
                  merge=merge,
                  archive=archive,

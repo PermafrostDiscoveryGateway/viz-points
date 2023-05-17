@@ -1,7 +1,8 @@
-import os
+from pathlib import Path
 from datetime import datetime
+from typing import Union
 
-def timer(time=False):
+def timer(time: Union[datetime, bool]=False) -> Union[datetime, int, float]:
     '''
     Start a timer if no argument is supplied, otherwise stop it and report the seconds and minutes elapsed.
 
@@ -19,7 +20,7 @@ def timer(time=False):
         time = (datetime.now() - time).seconds
         return time, time/60
 
-def make_dirs(d, exist_ok=True):
+def make_dirs(d: Path, exist_ok: bool=True):
     '''
     Simple wrapper to create directory using os.makedirs().
     Included is a logging command.
@@ -28,40 +29,42 @@ def make_dirs(d, exist_ok=True):
     :param pathlib.Path d: The directory to create
     :param bool exist_ok: Whether to gracefully accept an existing directory (default: True)
     '''
-    os.makedirs(d, exist_ok=exist_ok)
+    d.makedirs(exist_ok=exist_ok)
 
-def rm_files(files: list=[]):
+def rm_files(files: list[Path]=[]):
     '''
     Remove a list of intermediate processing files.
 
     Variables:
-    :param list files: The list of strings or `pathlib.Path`s to remove
+    :param list files: A list `pathlib.Path`s to remove
     '''
     for f in files:
-        if os.path.exists(f):
-            os.remove(f)
+        if f.is_file():
+            f.unlink()
 
-def write_wkt_to_file(f, wkt):
+def write_wkt_to_file(f: Path, wkt: str):
     '''
     Write well-known text (WKT) string to file. Will overwrite existing file.
 
     Variables:
     :param f: File path to write to (wil)
-    :type f: str or pathlib.Path
+    :type f: pathlib.Path
     :param str wkt: String to write
     '''
-    if os.path.exists(f):
-        os.remove(f)
+    if f.is_file():
+        f.unlink()
     with open(f, 'w') as fw:
         fw.write(str(wkt))
 
-def read_wkt_from_file(f):
+def read_wkt_from_file(f: Path) -> str:
     '''
     Read the WKT string from a file
 
     Variables:
     :param f: The file to read
-    :type f: str or pathlib.Path
+    :type f: pathlib.Path
+    :return: The well-known text of the CRS in use
+    :rtype: str
     '''
     with open(f, 'r') as fr:
         return fr.read()

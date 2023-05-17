@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 from ._version import __version__
 from datetime import datetime
 
@@ -29,7 +29,7 @@ where OPTIONS := {
 }
 ''' % (__version__, Y)
 
-MOD_LOC = os.path.dirname(os.path.abspath(__file__))
-BIN_LOC = os.path.join(MOD_LOC, 'bin')
-LAS2LAS_LOC = os.path.join(BIN_LOC, 'las2las')
-LASINFO_LOC = os.path.join(BIN_LOC, 'lasinfo')
+MOD_LOC = Path(__file__).parent.absolute()
+BIN_LOC = MOD_LOC.joinpath('bin')
+LAS2LAS_LOC = BIN_LOC.joinpath('las2las')
+LASINFO_LOC = BIN_LOC.joinpath('lasinfo')

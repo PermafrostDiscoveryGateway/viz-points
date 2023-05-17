@@ -1,13 +1,13 @@
-import os
+from pathlib import Path
 
 from .pipeline import Pipeline
 from .defs import MOD_LOC
 
-E = os.path.join(MOD_LOC, 'testdata/lp_jumps_e.laz')
-W = os.path.join(MOD_LOC, 'testdata/lp_jumps_w.laz')
+E = MOD_LOC.joinpath(MOD_LOC, 'testdata/lp_jumps_e.laz')
+W = MOD_LOC.joinpath(MOD_LOC, 'testdata/lp_jumps_w.laz')
 
-def test(f=[E, W],
-         verbose=True):
+def test(f: list[Path]=[E, W],
+         verbose: bool=True):
     '''
     Run both halves of the test dataset through the library to test functionality.
 

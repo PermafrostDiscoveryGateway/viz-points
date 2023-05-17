@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Union, Literal
 import os
 
 from . import L
@@ -22,11 +23,11 @@ class Pipeline():
     '''
 
     def __init__(self,
-                 f,
+                 f: Path,
                  merge: bool=True,
                  intensity_to_RGB: bool=False,
-                 rgb_scale=False,
-                 translate_z=False,
+                 rgb_scale: Union[float, int, Literal[False]]=False,
+                 translate_z: Union[float, int, Literal[False]]=False,
                  archive: bool=False,
                  verbose: bool=True):
         '''
@@ -34,13 +35,13 @@ class Pipeline():
 
         :param self self:
         :param f: The LAS file to process
-        :type f: str or pathlib.Path
+        :type f: pathlib.Path
         :param bool merge: Whether to use py3dtiles.merger.merge() to incorporate the processed dataset into an existing set of 3dtiles datasets
         :param bool intensity_to_RGB: Whether to copy intensity values to RGB (straight copy I->R I->G I->B, so will show up as greyscale)
         :param rgb_scale: Scale multiplier for RGB values
-        :type rgb_scale: bool or float
+        :type rgb_scale: float or int or False
         :param translate_z: Float translation for z values
-        :type translate_z: bool or float
+        :type translate_z: float or int or False
         :param bool archive: Archive the input dataset to `./archive` directory
         :param bool verbose: Whether to log more messages
         '''
@@ -78,14 +79,14 @@ class Pipeline():
         utils.log_init_stats(self)
 
 
-    def run(self):
+    def run(self) -> Path:
         '''
         Process the input LAS file.
 
         Variables:
         :param self self:
         :return: The path of the output directory
-        :rtype: str
+        :rtype: pathlib.Path
         '''
 
         for d in [self.rewrite_dir, self.archive_dir, self.out_dir]:

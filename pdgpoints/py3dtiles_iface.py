@@ -1,13 +1,13 @@
-import os
 import glob
 from pathlib import Path
+from typing import Union
 from py3dtiles import convert, merger
 from py3dtiles.utils import str_to_CRS
 from datetime import datetime
 
 from . import L, utils
 
-def log_tileset_error(e):
+def log_tileset_error(e: Union[ValueError, RuntimeError]):
     '''
     Log the error py3dtiles throws when the user tries to merge a single dataset.
 
@@ -20,29 +20,33 @@ def log_tileset_error(e):
               'in the output folder. The merged tileset could not be created. '
               'Add another tileset to allow the merge to work.')
 
-def rm_file(f):
+def rm_file(f: Path):
     '''
     Remove a file.
 
     Variables:
     :param f: File to remove
-    :type f: str or pathlib.Path
+    :type f: pathlib.Path
     '''
     try:
         L.info('Cleaning up previous merge artifact %s' % (f))
-        Path(f).unlink()
+        f.unlink()
     except FileNotFoundError as e:
         L.warning('FileNotFoundError caught when deleting %s. This might mean nothing.' % (f))
 
-def tile(f, out_dir, las_crs :str, out_crs: str='4978', verbose=False):
+def tile(f: Path,
+         out_dir: Path,
+         las_crs: str,
+         out_crs: str='4978',
+         verbose=False):
     '''
     Use py3dtiles.converter.convert() to create 3dtiles from a LAS or LAZ file.
 
     Variables:
     :param f: LAS or LAZ file to convert to 3dtiles
-    :type f: str or pathlib.Path
+    :type f: pathlib.Path
     :param out_dir: The output directory to store 3dtiles subdirectory in
-    :type out_dir: str or pathlib.Path
+    :type out_dir: pathlib.Path
     :param str las_crs: Coordinate reference system (CRS) of the input LAS file
     :param str out_crs: CRS of the output tileset
     :param bool verbose: Whether to log more messages
@@ -50,7 +54,7 @@ def tile(f, out_dir, las_crs :str, out_crs: str='4978', verbose=False):
     tilestart = utils.timer()
     L.info('File: %s' % (f))
     L.info('Creating tile directory')
-    fndir = os.path.join(out_dir, os.path.splitext(os.path.basename(f))[0])
+    fndir = out_dir / f.stem
     CRSi = str_to_CRS(las_crs)
     CRSo = str_to_CRS(out_crs)
     L.info('CRS to convert from: %s' % (CRSi))
@@ -70,7 +74,9 @@ def tile(f, out_dir, las_crs :str, out_crs: str='4978', verbose=False):
     L.info('Finished tiling (%s sec / %.1f min)' % utils.timer(tilestart))
 
 
-def merge(dir, overwrite: bool=False, verbose=False):
+def merge(dir: Path,
+          overwrite: bool=False,
+          verbose: bool=False):
     '''
     Use py3dtiles.merger.merge() to merge more than one 3dtiles dataset.
     This function will search for `tileset.json` files in subdirectories
@@ -86,13 +92,13 @@ def merge(dir, overwrite: bool=False, verbose=False):
     L.info('Output dir: %s' % dir)
     mergestart = utils.timer()
 
-    paths = [Path(path) for path in glob.glob(os.path.join(dir, '*', 'tileset.json'))]
-    ts_path = Path(os.path.join(dir, 'tileset.json'))
-    r_path = Path(os.path.join(dir, 'r.pnts'))
+    paths = [Path(path) for path in glob.glob(dir.joinpath('*', 'tileset.json'))]
+    ts_path = Path(dir.joinpath('tileset.json'))
+    r_path = Path(dir.joinpath('r.pnts'))
 
     if overwrite:
         for f in [ts_path, r_path]:
-            if os.path.exists(f):
+            if f.is_file():
                 rm_file(f)
 
     try:

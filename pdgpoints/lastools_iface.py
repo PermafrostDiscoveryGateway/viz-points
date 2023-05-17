@@ -1,5 +1,5 @@
-import os
-import pathlib
+from pathlib import Path
+from typing import Union, Tuple
 from subprocess import Popen, PIPE, STDOUT, CalledProcessError, check_output
 from datetime import datetime
 
@@ -7,7 +7,8 @@ from .defs import LAS2LAS_LOC, LASINFO_LOC
 from . import L
 from . import utils
 
-def log_subprocess_output(pipe, verbose=False):
+def log_subprocess_output(pipe: PIPE,
+                          verbose: bool=False):
     '''
     Log the output from a lastools subprocess.
 
@@ -22,7 +23,9 @@ def log_subprocess_output(pipe, verbose=False):
     except CalledProcessError as e:
         L.error("Subprocess Error> %s: %s" % (repr(e), str(e)))
 
-def run_proc(command, get_wkt: bool=False, verbose: bool=False):
+def run_proc(command: list[str],
+             get_wkt: bool=False,
+             verbose: bool=False) -> Union[str, None]:
     '''
     Start a subprocess with a given command.
 
@@ -51,13 +54,14 @@ def run_proc(command, get_wkt: bool=False, verbose: bool=False):
     if get_wkt:
         return wktstr
 
-def lasinfo(f, verbose: bool=False):
+def lasinfo(f: Path,
+            verbose: bool=False) -> Tuple[str, str, str]:
     '''
     Use lasinfo to extract CRS info (in EPSG format) from a LAS or LAZ point cloud file.
 
     Variables:
     :param f: The input file
-    :type f: str or pathlib.Path
+    :type f: pathlib.Path
 
     :return: The EPSG code of the CRS, and CRS info as WKT
     :rtype: str, str, str
@@ -79,8 +83,8 @@ def lasinfo(f, verbose: bool=False):
     L.info('Finished lasinfo (%s sec / %.1f min)' % utils.timer(lasinfostart))
     return epsg, wkt, wktf
 
-def las2las_ogc_wkt(f,
-                    output_file,
+def las2las_ogc_wkt(f: Path,
+                    output_file: Path,
                     verbose: bool=False):
     '''
     Use las2las to write CRS info in OGC WKT format to the output file.
@@ -104,10 +108,10 @@ def las2las_ogc_wkt(f,
     las2lastime = (datetime.now() - las2lasstart).seconds
     L.info('Finished las2las (%s sec / %.1f min)' % (las2lastime, las2lastime/60))
 
-def las2las(f,
-            output_file,
+def las2las(f: Path,
+            output_file: Path,
             #out_crs: str='4326',
-            archive_dir='',
+            archive_dir: Path=Path(''),
             archive: bool=False,
             intensity_to_RGB: bool=False,
             rgb_scale: float=1.0,
@@ -180,11 +184,10 @@ def las2las(f,
     if archive:
         # move the file to the archive
         try:
-            assert (archive_dir != '')
-            bn = os.path.split(f)[1]
-            an = os.path.join(archive_dir, bn)
+            assert (str(archive_dir) != '')
+            an = archive_dir.joinpath(f.name)
             L.info('Archiving to %s' % (an))
-            os.replace(src=f, dst=an)
+            f.rename(an)
         except AssertionError as e:
             L.error('Archiving is on but no archive directory set! Cannot archive files!')
         except Exception as e:
