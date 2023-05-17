@@ -55,13 +55,15 @@ class Pipeline():
         self.L = L
         self.L.debug('Initializing pipeline.')
         self.f = Path(f).absolute()
-        self.base_dir, self.bn = os.path.split(self.f)
-        self.given_name, self.ext = os.path.splitext(self.bn)
-        self.ogcwkt_name = os.path.join(self.base_dir, '%s-wkt.laz' % (self.given_name))
-        self.rewrite_dir = os.path.join(self.base_dir, 'rewrite')
-        self.archive_dir = os.path.join(self.base_dir, 'archive')
-        self.out_dir = os.path.join(self.base_dir, '3dtiles')
-        self.las_name = os.path.join(self.rewrite_dir, '%s.las' % (self.given_name))
+        self.base_dir = self.f.parent.absolute()
+        self.bn = self.f.name
+        self.given_name = self.f.stem
+        self.ext = self.f.suffix
+        self.ogcwkt_name = self.base_dir / '%s-wkt.laz' % (self.given_name)
+        self.rewrite_dir = self.base_dir / 'rewrite'
+        self.archive_dir = self.base_dir / 'archive'
+        self.out_dir = self.base_dir / '3dtiles'
+        self.las_name = self.rewrite_dir / '%s.las' % (self.given_name)
         self.intensity_to_RGB = intensity_to_RGB
         try:
             self.rgb_scale = float(rgb_scale) if rgb_scale else 1.
