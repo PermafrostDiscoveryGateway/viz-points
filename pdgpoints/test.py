@@ -22,6 +22,7 @@ def test(f: list[Path]=[E, W],
                      merge=merge,
                      archive=True,
                      rgb_scale=2.0,
+                     translate_z=-28.143, # geoid height at https://geodesy.noaa.gov/api/geoid/ght?lat=44.25&lon=-73.96
                      verbose=verbose)
         p.run()
         merge = True
