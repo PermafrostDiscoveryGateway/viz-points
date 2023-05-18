@@ -75,7 +75,7 @@ def lasinfo(f: Path,
     ]
     wkt = run_proc(command=command, get_wkt=True, verbose=verbose)
     L.debug('WKT string: %s' % (wkt))
-    wktf = str(f) + '-wkt.txt'
+    wktf = Path(str(f) + '-wkt.txt')
     L.info('Writing WKT to %s' % (wktf))
     utils.write_wkt_to_file(f=wktf, wkt=wkt)
     epsg = wkt.split('"')[-2]

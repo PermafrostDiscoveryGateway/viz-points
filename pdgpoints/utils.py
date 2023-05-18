@@ -29,7 +29,7 @@ def make_dirs(d: Path, exist_ok: bool=True):
     :param pathlib.Path d: The directory to create
     :param bool exist_ok: Whether to gracefully accept an existing directory (default: True)
     '''
-    d.makedirs(exist_ok=exist_ok)
+    d.mkdir(exist_ok=exist_ok)
 
 def rm_files(files: list[Path]=[]):
     '''
