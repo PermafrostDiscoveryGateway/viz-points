@@ -92,7 +92,7 @@ def merge(dir: Path,
     L.info('Output dir: %s' % dir)
     mergestart = utils.timer()
 
-    paths = [Path(path) for path in glob.glob(dir.joinpath('*', 'tileset.json'))]
+    paths = [Path(path) for path in glob.glob(str(dir.joinpath('*', 'tileset.json')))]
     ts_path = Path(dir.joinpath('tileset.json'))
     r_path = Path(dir.joinpath('r.pnts'))
 
