@@ -58,11 +58,11 @@ class Pipeline():
         self.bn = self.f.name
         self.given_name = self.f.stem
         self.ext = self.f.suffix
-        self.ogcwkt_name = self.base_dir / '%s-wkt.laz' % (self.given_name)
+        self.ogcwkt_name = self.base_dir / ('%s-wkt.laz' % (self.given_name))
         self.rewrite_dir = self.base_dir / 'rewrite'
         self.archive_dir = self.base_dir / 'archive'
         self.out_dir = self.base_dir / '3dtiles'
-        self.las_name = self.rewrite_dir / '%s.las' % (self.given_name)
+        self.las_name = self.rewrite_dir / ('%s.las' % (self.given_name))
         self.intensity_to_RGB = intensity_to_RGB
         try:
             self.rgb_scale = float(rgb_scale) if rgb_scale else 1.
