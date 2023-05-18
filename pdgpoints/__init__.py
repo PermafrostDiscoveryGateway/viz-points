@@ -1,5 +1,5 @@
+from pathlib import Path
 import logging
-import os
 import sys
 
 from ._version import __version__
@@ -17,10 +17,10 @@ def start_logging(console: bool=True):
     LOG_FMT = "%(asctime)s:%(levelname)s: %(message)s" # overrides import
     L = logging.getLogger('pdgpoints')
     L.setLevel("INFO")
-    home = os.path.expanduser('~').replace('\\', '/')
-    log_dir = os.path.join(home, 'viz-points', 'log').replace('\\', '/')
-    log_loc = os.path.join(log_dir, 'pdgpoints.log').replace('\\', '/')
-    os.makedirs(log_dir, exist_ok=True)
+    home = Path.home()
+    log_dir = home / 'viz-points' / 'log'
+    log_loc = log_dir / 'pdgpoints.log'
+    log_dir.mkdir(exist_ok=True)
     fh = logging.FileHandler(log_loc)
     formatter = logging.Formatter(fmt=LOG_FMT, datefmt=DATE_FMT)
     fh.setFormatter(formatter)
