@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Union
 from py3dtiles import convert, merger
 from py3dtiles.utils import str_to_CRS
-from datetime import datetime
 
 from . import L, utils
 
