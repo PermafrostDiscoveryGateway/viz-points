@@ -78,10 +78,13 @@ def lasinfo(f: Path,
     wktf = Path(str(f) + '-wkt.txt')
     L.info('Writing WKT to %s' % (wktf))
     utils.write_wkt_to_file(f=wktf, wkt=wkt)
-    epsg = wkt.split('"')[-2]
-    L.info('Found EPSG: %s' % (epsg))
+    epsg_h = wkt.split('"')[-2] # use pycrs with first COMPD_CS object
+    epsg_v = '' # parse from second COMPD_CS list object
+    lat = 0 # parse from lasinfo 
+    lon = 0 # parse from lasinfo
+    L.info('Found EPSG: %s' % (epsg_h))
     L.info('Finished lasinfo (%s sec / %.1f min)' % utils.timer(lasinfostart))
-    return epsg, wkt, wktf
+    return epsg_h, epsg_v, lat, lon, wkt, wktf
 
 def las2las_ogc_wkt(f: Path,
                     output_file: Path,

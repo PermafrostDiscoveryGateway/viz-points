@@ -2,7 +2,9 @@ from pathlib import Path
 from typing import Union, Literal
 
 from . import L
+from . import defs
 from . import utils
+from . import geoid
 from . import lastools_iface
 from . import py3dtiles_iface
 
@@ -27,6 +29,8 @@ class Pipeline():
                  intensity_to_RGB: bool=False,
                  rgb_scale: Union[float, int, Literal[False]]=False,
                  translate_z: Union[float, int, Literal[False]]=False,
+                 from_geoid: Union[str, Literal[None]]=None,
+                 geoid_region: str=defs.REGIONS[0],
                  archive: bool=False,
                  verbose: bool=True):
         '''
@@ -74,9 +78,15 @@ class Pipeline():
         except ValueError:
             self.L.warning('Could not convert Z-translation value to float. Not translating Z values.')
             self.translate_z = 0.
+        self.from_geoid = from_geoid
+        self.geoid_adj = 0
+        self.geoid_region = geoid_region
         self.archive = archive
         self.merge = merge
-        self.steps = 5 if merge else 4
+        self.steps = 4
+        self.steps = self.steps + 1 if merge else self.steps
+        self.steps = self.steps + 1 if from_geoid else self.steps
+        self.step = 1
         utils.log_init_stats(self)
 
 
@@ -94,16 +104,23 @@ class Pipeline():
             self.L.info('Creating dir %s' % (d))
             utils.make_dirs(d)
 
-        L.info('Rewriting file with new OGC WKT... (step 1 of %s)' % (self.steps))
+        L.info('Rewriting file with new OGC WKT... (step %s of %s)' % (self.step, self.steps))
         lastools_iface.las2las_ogc_wkt(f=self.f,
                                        output_file=self.ogcwkt_name,
                                        verbose=self.verbose)
 
-        L.info('Doing lasinfo dump... (step 2 of %s)' % (self.steps))
-        las_crs, wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name,
+        self.step += 1
+        L.info('Doing lasinfo dump... (step %s of %s)' % (self.step, self.steps))
+        las_crs, las_vrs, lat, lon, wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name,
                                               verbose=self.verbose)
+        
+        if self.from_geoid:
+            self.step += 1
+            L.info('Looking up %s to WGS84 conversion... (step %s of %s)' % (self.from_geoid, self.step, self.steps))
+            geoid.adjustment(from_geoid=self.from_geoid, lat=lat, lon=lon, region=self.geoid_region)
 
-        L.info('Starting las2las rewrite... (step 3 of %s)' % (self.steps))
+        self.step += 1
+        L.info('Starting las2las rewrite... (step %s of %s)' % (self.step, self.steps))
         lastools_iface.las2las(f=self.ogcwkt_name,
                                output_file=self.las_name,
                                archive_dir=self.archive_dir,
@@ -113,7 +130,8 @@ class Pipeline():
                                translate_z=self.translate_z,
                                verbose=self.verbose)
 
-        L.info('Starting tiling process... (step 4 of %s)' % (self.steps))
+        self.step += 1
+        L.info('Starting tiling process... (step %s of %s)' % (self.step, self.steps))
         py3dtiles_iface.tile(f=self.las_name,
                              out_dir=self.out_dir,
                              las_crs=las_crs,
@@ -121,7 +139,8 @@ class Pipeline():
                              verbose=self.verbose)
 
         if self.merge:
-            L.info('Starting merge process... (step 5 of %s)' % (self.steps))
+            self.step += 1
+            L.info('Starting merge process... (step %s of %s)' % (self.step, self.steps))
             py3dtiles_iface.merge(dir=self.out_dir,
                                   overwrite=True,
                                   verbose=self.verbose)
