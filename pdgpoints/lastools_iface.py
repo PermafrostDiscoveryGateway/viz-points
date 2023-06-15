@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Union, Tuple
 from subprocess import Popen, PIPE, STDOUT, CalledProcessError, check_output
 from datetime import datetime
+from pyproj import CRS
 
 from .defs import LAS2LAS_LOC, LASINFO_LOC
 from . import L
@@ -75,14 +76,14 @@ def lasinfo(f: Path,
     ]
     wkt = run_proc(command=command, get_wkt=True, verbose=verbose)
     L.debug('WKT string: %s' % (wkt))
+    crs, epsg_h, epsg_v = utils.get_epsgs_from_wkt(wkt)
+    cpd = 'Compound ' if crs.is_compound else ''
+    L.info('%sCRS object: \n%s' % (cpd, repr(crs)))
     wktf = Path(str(f) + '-wkt.txt')
     L.info('Writing WKT to %s' % (wktf))
     utils.write_wkt_to_file(f=wktf, wkt=wkt)
-    epsg_h = wkt.split('"')[-2] # use pycrs with first COMPD_CS object
-    epsg_v = '' # parse from second COMPD_CS list object
-    lat = 0 # parse from lasinfo 
+    lat = 0 # parse from lasinfo
     lon = 0 # parse from lasinfo
-    L.info('Found EPSG: %s' % (epsg_h))
     L.info('Finished lasinfo (%s sec / %.1f min)' % utils.timer(lasinfostart))
     return epsg_h, epsg_v, lat, lon, wkt, wktf
 

@@ -55,7 +55,7 @@ REGIONS = [
 
 VDATUM_URL = 'https://vdatum.noaa.gov/vdatumweb/api/convert?s_x=%s&s_y=%s&s_h_frame=%s&s_v_frame=%s&s_v_geoid=%s&t_h_frame=%s&t_v_frame=%s&t_v_geoid=%s&region=%s'
 
-MODEL_LIST = [None]
+MODEL_LIST = []
 for m in NGS_MODELS:
     MODEL_LIST.append(m)
 for m in VDATUM_MODELS:

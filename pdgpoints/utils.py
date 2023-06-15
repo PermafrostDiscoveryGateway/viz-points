@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import datetime
 from typing import Union
+from pyproj import CRS
 
 def timer(time: Union[datetime, bool]=False) -> Union[datetime, int, float]:
     '''
@@ -68,6 +69,40 @@ def read_wkt_from_file(f: Path) -> str:
     '''
     with open(f, 'r') as fr:
         return fr.read()
+
+def get_epsgs_from_wkt(wkt: str) -> list:
+    """
+    Use pyproj to parse a well-known text string to CRS. Returns a list of
+    `[CRS, horizontal EPSG, vertical EPSG]` where the EPSG fields could be
+    an integer representing an EPSG code or `None`.
+
+    Variables:
+    :param str wkt: The well-known text string to parse to pyproj.crs.CRS
+    :return: List of [pyproj.crs.CRS object, epsg_h (int or None), epsg_v (int or None)])
+    :rtype: list
+    """
+    epsg_h, epsg_v = None, None
+    crs = CRS.from_wkt(wkt)
+    if crs.is_compound:
+        L.info('Found compound coordinate system (COMPD_CS): %s entries' % (len(crs.sub_crs_list)))
+        if len(crs.sub_crs_list) > 2: # not sure if this case exists, but should be warned anyway
+            L.warning('More than 2 entries in a compound coordinate system may cause an unwanted override!')
+        for c in crs:
+            if c.is_vertical:
+                epsg_v = c.to_epsg()
+            else:
+                epsg_h = c.to_epsg()
+    else:
+        if crs.is_vertical:
+            epsg_v = crs.to_epsg()
+        else:
+            epsg_h = crs.to_epsg()
+    if epsg_h:
+        L.info('Found horizontal EPSG: %s' % (epsg_h))
+    if epsg_v:
+        L.info('Found vertical EPSG: %s' % (epsg_v))
+    return crs, epsg_h, epsg_v
+
 
 def log_init_stats(self):
     '''

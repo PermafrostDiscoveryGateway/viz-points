@@ -117,7 +117,10 @@ class Pipeline():
         if self.from_geoid:
             self.step += 1
             L.info('Looking up %s to WGS84 conversion... (step %s of %s)' % (self.from_geoid, self.step, self.steps))
-            geoid.adjustment(from_geoid=self.from_geoid, lat=lat, lon=lon, region=self.geoid_region)
+            geoid.adjustment(user_vrs=self.from_geoid,
+                             las_vrs=las_vrs,
+                             lat=lat, lon=lon,
+                             region=self.geoid_region)
 
         self.step += 1
         L.info('Starting las2las rewrite... (step %s of %s)' % (self.step, self.steps))
