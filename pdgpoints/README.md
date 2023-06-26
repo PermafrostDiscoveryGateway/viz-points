@@ -1,2 +1,2 @@
-# cloudrp
-Point cloud processing for Defense Resiliency Platform
+# pdgpoints
+Point cloud processing workflow
