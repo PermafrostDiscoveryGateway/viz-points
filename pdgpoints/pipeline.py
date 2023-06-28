@@ -158,4 +158,4 @@ class Pipeline():
         s, m = utils.timer(self.starttime)
         L.info('Finished processing %s (%s sec / %.1f min)' % (self.bn, s, m))
 
-        return str(self.out_dir)
+        return self.out_dir
