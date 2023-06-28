@@ -56,7 +56,7 @@ def run_proc(command: list[str],
         return wktstr
 
 def lasinfo(f: Path,
-            verbose: bool=False) -> Tuple[str, str, str]:
+            verbose: bool=False) -> Tuple[str, str, str, Path]:
     '''
     Use lasinfo to extract CRS info (in EPSG format) from a LAS or LAZ point cloud file.
 
@@ -65,7 +65,7 @@ def lasinfo(f: Path,
     :type f: pathlib.Path
 
     :return: The EPSG code of the CRS, and CRS info as WKT
-    :rtype: str, str, str
+    :rtype: str, str, str, pathlib.Path
     '''
     lasinfostart = utils.timer()
     command = [
@@ -82,10 +82,8 @@ def lasinfo(f: Path,
     wktf = Path(str(f) + '-wkt.txt')
     L.info('Writing WKT to %s' % (wktf))
     utils.write_wkt_to_file(f=wktf, wkt=wkt)
-    lat = 0 # parse from lasinfo
-    lon = 0 # parse from lasinfo
     L.info('Finished lasinfo (%s sec / %.1f min)' % utils.timer(lasinfostart))
-    return epsg_h, epsg_v, lat, lon, wkt, wktf
+    return epsg_h, epsg_v, wkt, wktf
 
 def las2las_ogc_wkt(f: Path,
                     output_file: Path,

@@ -111,7 +111,7 @@ class Pipeline():
 
         self.step += 1
         L.info('Doing lasinfo dump... (step %s of %s)' % (self.step, self.steps))
-        las_crs, las_vrs, lat, lon, wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name,
+        las_crs, las_vrs, self.wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name,
                                               verbose=self.verbose)
         
         if self.from_geoid:
