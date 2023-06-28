@@ -1,91 +1,14 @@
-import time
-import requests
 from typing import Union, Literal
 
-from . import defs
+from pyegt.height import HeightModel
+from pyegt.utils import model_search
 
-def get_ngs_json(lat: float, lon: float, ngs_model: int):
-    """
-    
-    Variables:
-    :param float lat: Decimal latitude
-    :param float lon: Decimal longitude
-    :param str ngs_model: The NGS geoid model to use for lookup `(see list) <https://www.ngs.noaa.gov/web_services/geoid.shtml>`_
-    """
-    ngs_url = defs.NGS_URL % (lat, lon, ngs_model)
-    i = 0
-    while True:
-        response = requests.get(ngs_url)
-        json_data = response.json() if response and response.status_code == 200 else None
-        if json_data and 'geoidHeight' in json_data:
-            L.info('Found geoidHeight value of %s' % (json_data['geoidHeight']))
-            return json_data
-        if json_data and (not 'geoidHeight' in json_data):
-            L.error('Json data request returned in error: %s' % (json_data))
-            exit(1)
-        if i < 3:
-            i += 1
-            time.sleep(1)
-        else:
-            L.error('Could not complete request for NGS API in %s tries.' % (i  ))
-            exit(1)
-
-def get_vdatum_json(lat: float, lon: float, vdatum_model: str, region: str):
-    """
-    
-    Variables:
-    :param float lat: Decimal latitude
-    :param float lon: Decimal longitude
-    :param str vdatum_model: The VDatum geoid, tidal, or potential model to use for lookup `(see list) <https://vdatum.noaa.gov/docs/services.html#step160>`_
-    """
-    wgs = 'WGS84_G1674'
-    vdatum_url = defs.VDATUM_URL % (
-        lon, # s_x
-        lat, # s_y
-        wgs, # s_h_frame
-        vdatum_model, # s_v_frame
-        vdatum_model, # s_v_geoid
-        wgs, # t_h_frame
-        wgs, # t_v_frame
-        vdatum_model, # t_v_geoid
-        region # region
-        )
-    r = 0
-    while True:
-        response = requests.get(vdatum_url)
-        json_data = response.json() if response and response.status_code == 200 else None
-        if json_data and 't_z' in json_data:
-            return json_data
-        if json_data and 'errorCode' in json_data:
-            if 'Selected Region is Invalid!' in json_data['message']:
-                # retry with different region
-                region = defs.REGIONS[r]
-                r += 1
-                time.sleep(1)
-                continue
-            else:
-                # log the error and exit
-                break
-
-def model_search(vrs: str=None):
-    """
-
-    Variables:
-    :param str vrs: 
-    """
-    for m in defs.MODEL_LIST:
-        if m in vrs:
-            # sometimes las_vrs will be formatted like "EGM2008 height" and this should catch that
-            return m
-    return None
-
-def adjustment(user_vrs: Union[str, Literal[None]]=None,
+def use_model(user_vrs: Union[str, Literal[None]]=None,
                las_vrs: Union[str, Literal[None]]=None, # overrides user_vrs.
                # consequently implies we trust file headers;
                # this is done to support projects with multiple CRS
                # and to enforce correct CRS info in database
-               lat:float=0.0, lon: float=0.0,
-               region=defs.REGIONS[0]):
+               ) -> str:
     """
     Get the geoid, tidal, or geopotential model
     in order to calculate ellipsoid height.
@@ -175,12 +98,4 @@ def adjustment(user_vrs: Union[str, Literal[None]]=None,
                 L.error('Could not find VRS matching value "%s"' % (user_vrs))
                 exit(1)
 
-    if vrs in defs.NGS_MODELS:
-        # format url for NGS API, then interpret json response
-        ngs_model = defs.NGS_MODELS[vrs]
-        ngs_json = get_ngs_json(lat, lon, ngs_model)
-        return float(ngs_json['geoidHeight'])
-    if vrs in defs.VDATUM_MODELS:
-        # format url for VDatum API, then interpret json response
-        vdatum_json = get_vdatum_json(lat, lon, vrs, region)
-        return float(vdatum_json['t_z'])
+    return vrs
