@@ -7,11 +7,8 @@ def timer(time: Union[datetime, bool]=False) -> Union[datetime, int, float]:
     '''
     Start a timer if no argument is supplied, otherwise stop it and report the seconds and minutes elapsed.
 
-    Variables:
     :param time: The directory to create
     :type time: bool or datetime.datetime
-
-    Returns:
     :return: If no time is supplied, return start time; else return elapsed time in seconds and decimal minutes
     :rtype: datetime.datetime or (int, float)
     '''
@@ -26,7 +23,6 @@ def make_dirs(d: Path, exist_ok: bool=True):
     Simple wrapper to create directory using os.makedirs().
     Included is a logging command.
 
-    Variables:
     :param pathlib.Path d: The directory to create
     :param bool exist_ok: Whether to gracefully accept an existing directory (default: True)
     '''
@@ -36,7 +32,6 @@ def rm_files(files: list[Path]=[]):
     '''
     Remove a list of intermediate processing files.
 
-    Variables:
     :param list files: A list `pathlib.Path`s to remove
     '''
     for f in files:
@@ -47,7 +42,6 @@ def write_wkt_to_file(f: Path, wkt: str):
     '''
     Write well-known text (WKT) string to file. Will overwrite existing file.
 
-    Variables:
     :param f: File path to write to (wil)
     :type f: pathlib.Path
     :param str wkt: String to write
@@ -61,7 +55,6 @@ def read_wkt_from_file(f: Path) -> str:
     '''
     Read the WKT string from a file
 
-    Variables:
     :param f: The file to read
     :type f: pathlib.Path
     :return: The well-known text of the CRS in use
@@ -76,7 +69,6 @@ def get_epsgs_from_wkt(wkt: str) -> list:
     `[CRS, horizontal EPSG, vertical EPSG]` where the EPSG fields could be
     an integer representing an EPSG code or `None`.
 
-    Variables:
     :param str wkt: The well-known text string to parse to pyproj.crs.CRS
     :return: List of [pyproj.crs.CRS object, epsg_h (int or None), epsg_v (int or None)])
     :rtype: list
@@ -108,7 +100,6 @@ def log_init_stats(self):
     '''
     Log initialization values.
 
-    Variables:
     :param self self: The `self` object from which to extract values.
     '''
     self.L.info('File:            %s' % (self.f))

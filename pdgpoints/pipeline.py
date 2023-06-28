@@ -14,7 +14,6 @@ class Pipeline():
     Takes input point cloud files of any type supported by lastools
     and outputs 3dtiles files.
 
-    Variables:
     :param f: The LAS file to process
     :type f: str or pathlib.Path
     :param bool merge: Whether to use py3dtiles.merger.merge() to incorporate the processed dataset into an existing set of 3dtiles datasets
@@ -94,7 +93,6 @@ class Pipeline():
         '''
         Process the input LAS file.
 
-        Variables:
         :param self self:
         :return: The path of the output directory
         :rtype: pathlib.Path

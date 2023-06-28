@@ -13,7 +13,6 @@ def log_subprocess_output(pipe: PIPE,
     '''
     Log the output from a lastools subprocess.
 
-    Variables:
     :param subprocess.PIPE pipe: The pipe to listen to
     :param bool verbose: Whether to log more messages 
     '''
@@ -30,7 +29,6 @@ def run_proc(command: list[str],
     '''
     Start a subprocess with a given command.
 
-    Variables:
     :param list command: List of command arguments
     :param bool get_wkt: Whether to grep the well-known text (WKT) string from lasinfo output
     :param bool verbose: Whether to log more messages
@@ -60,7 +58,6 @@ def lasinfo(f: Path,
     '''
     Use lasinfo to extract CRS info (in EPSG format) from a LAS or LAZ point cloud file.
 
-    Variables:
     :param f: The input file
     :type f: pathlib.Path
 
@@ -91,7 +88,6 @@ def las2las_ogc_wkt(f: Path,
     '''
     Use las2las to write CRS info in OGC WKT format to the output file.
 
-    Variables:
     :param f: The input file
     :type f: str or pathlib.Path
     :param output_file: The output file
@@ -128,7 +124,6 @@ def las2las(f: Path,
     Also, an option exists to copy intensity values into RGB for viewing.
     Commands are written to log output and STDOUT from las2las should be as well.
 
-    Variables:
     :param f: The input file
     :type f: str or pathlib.Path
     :param output_file: The output file
