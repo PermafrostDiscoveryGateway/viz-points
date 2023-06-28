@@ -87,8 +87,8 @@ def adjustment(user_vrs: Union[str, Literal[None]]=None,
                lat:float=0.0, lon: float=0.0,
                region=defs.REGIONS[0]):
     """
-    Get the geoid, tidal, or geopotential model height above the ellipsoid
-    in order to convert to ellipsoid height (i.e. compatible with Cesium).
+    Get the geoid, tidal, or geopotential model
+    in order to calculate ellipsoid height.
     The following figure demonstrates the difference between geoid, ellipsoid,
     and topographic ground surface:
 
@@ -111,11 +111,6 @@ def adjustment(user_vrs: Union[str, Literal[None]]=None,
     (``N``).
     Conversion is then a simple addition of these values (``H + N = h``).
 
-    This function will use either the
-    `NGS <https://www.ngs.noaa.gov/web_services/geoid.shtml>`_ or
-    `VDatum https://vdatum.noaa.gov/docs/services.html`_ API to look up
-    geoid height relative to the ellipsoid (`N`).
-
     .. note::
 
         ``las_vrs`` is set by file headers and overrides ``user_vrs``.
@@ -130,29 +125,24 @@ def adjustment(user_vrs: Union[str, Literal[None]]=None,
         use of third-party software such as
         `LASTools <https://github.com/LAStools/LAStools>`_.
 
-    Variables:
-    :param user_vrs: The user-specified geoid model to convert from if none is found in the file header
-    :type user_vrs: str or None
-    :param las_vrs: WKT-derived model from file header to convert from (overrides ``user_vrs``)
-    :type las_vrs: str or None
-    :param float lat: Decimal latitude
-    :param float lon: Decimal longitude
-    :param str region: The VDatum region `(see list in docs) <https://vdatum.noaa.gov/docs/services.html#step140>`_
+        The 9 possible input scenarios and their outcomes::
 
-    :return: 
-    :rtype: int or pyproj.crs.CRS
+            # 1. matched las_vrs / matched user_vrs -> las_vrs
+            # 2. matched las_vrs / unmatched user_vrs -> las_vrs
+            # 3. matched las_vrs / empty user_vrs -> las_vrs
+            # 4. empty las_vrs / empty user_vrs -> 0
+            # 5. empty las_vrs / matched user_vrs -> user_vrs
+            # 6. empty las_vrs / unmatched user_vrs -> exit(1)
+            # 7. unmatched las_vrs / empty user_vrs -> exit(1)
+            # 8. unmatched las_vrs / matched user_vrs -> exit(1) # maybe in the future we have a geoid_override setting where this will execute
+            # 9. unmatched las_vrs / unmatched user_vrs -> exit(1)
+
+
+    :param user_vrs: The user-specified geoid model to convert from if none is found in the file header
+    :return: The model name to use for lookup
+    :rtype: str
     """
 
-    # the 9 possible scenarios and their outcomes
-    # 1. matched las_vrs / matched user_vrs -> las_vrs
-    # 2. matched las_vrs / unmatched user_vrs -> las_vrs
-    # 3. matched las_vrs / empty user_vrs -> las_vrs
-    # 4. empty las_vrs / empty user_vrs -> 0
-    # 5. empty las_vrs / matched user_vrs -> user_vrs
-    # 6. empty las_vrs / unmatched user_vrs -> exit(1)
-    # 7. unmatched las_vrs / empty user_vrs -> exit(1)
-    # 8. unmatched las_vrs / matched user_vrs -> exit(1) # maybe in the future we have a geoid_override setting where this will execute
-    # 9. unmatched las_vrs / unmatched user_vrs -> exit(1)
 
     vrs = None
     if las_vrs:
