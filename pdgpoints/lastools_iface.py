@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Union, Tuple
 from subprocess import Popen, PIPE, STDOUT, CalledProcessError, check_output
 from datetime import datetime
-from pyproj import CRS
+import pandas as pd
 
 from .defs import LAS2LAS_LOC, LASINFO_LOC
 from . import L
@@ -25,6 +25,7 @@ def log_subprocess_output(pipe: PIPE,
 
 def run_proc(command: list[str],
              get_wkt: bool=False,
+             get_xy: bool=False,
              verbose: bool=False) -> Union[str, None]:
     '''
     Start a subprocess with a given command.
@@ -52,6 +53,8 @@ def run_proc(command: list[str],
         exit(1)
     if get_wkt:
         return wktstr
+    if get_xy:
+        return process.stdout
 
 def lasinfo(f: Path,
             verbose: bool=False) -> Tuple[str, str, str, Path]:
@@ -81,6 +84,31 @@ def lasinfo(f: Path,
     utils.write_wkt_to_file(f=wktf, wkt=wkt)
     L.info('Finished lasinfo (%s sec / %.1f min)' % utils.timer(lasinfostart))
     return epsg_h, epsg_v, wkt, wktf
+
+def lasmean(f: Path, verbose: bool=False):
+    """
+    Use las2txt to output values of X and Y for a dataset,
+    then return the mean of those points. To save resources,
+    only every 10,000th point will be sampled.
+
+    :param f: The input file
+    :type f: str or pathlib.Path
+    :return: Mean X and Y of the dataset
+    :rtype: float, float
+    """
+    lasmeanstart = utils.timer()
+    xyf = Path(str(f) + '-xy.txt')
+    command = [
+        LAS2LAS_LOC,
+        '-i', f,
+        '-keep_every_nth', '10000',
+        '-stdout',
+        '-parse', 'xy'
+    ]
+    data = run_proc(command=command, get_xy=True, verbose=verbose)
+    df = pd.read_csv(data, sep=' ', header=None, names=['x', 'y'])
+    mean = df.mean()
+    return mean.x, mean.y
 
 def las2las_ogc_wkt(f: Path,
                     output_file: Path,
