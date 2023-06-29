@@ -110,16 +110,13 @@ class Pipeline():
 
         self.step += 1
         L.info('Doing lasinfo dump... (step %s of %s)' % (self.step, self.steps))
-        las_crs, las_vrs, self.wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name,
+        self.las_crs, las_vrs, self.wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name,
                                               verbose=self.verbose)
         
-        if self.from_geoid:
+        if self.from_geoid or las_vrs:
             self.step += 1
-            L.info('Looking up %s to WGS84 conversion... (step %s of %s)' % (self.from_geoid, self.step, self.steps))
-            geoid.adjustment(user_vrs=self.from_geoid,
-                             las_vrs=las_vrs,
-                             lat=lat, lon=lon,
-                             region=self.geoid_region)
+            L.info('Getting mean lat/lon from las file... (step %s of %s)' % (self.step, self.steps))
+            self.x, self.y = lastools_iface.lasmean(f=self.ogcwkt_name, verbose=self.verbose)
 
         self.step += 1
         L.info('Starting las2las rewrite... (step %s of %s)' % (self.step, self.steps))
