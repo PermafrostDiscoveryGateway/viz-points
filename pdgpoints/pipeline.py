@@ -55,6 +55,7 @@ class Pipeline():
             L.setLevel('DEBUG')
         L.propagate = verbose
         self.verbose = verbose
+        self.auto = False # if auto-processing
         self.L = L
         self.L.debug('Initializing pipeline.')
         self.f = Path(f).absolute()
