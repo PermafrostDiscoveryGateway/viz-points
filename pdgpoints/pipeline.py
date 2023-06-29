@@ -10,7 +10,7 @@ from . import lastools_iface
 from . import py3dtiles_iface
 
 class Pipeline():
-    '''
+    """
     The LiDAR processing pipeline.
     Takes input point cloud files of any type supported by lastools
     and outputs 3dtiles files.
@@ -21,8 +21,7 @@ class Pipeline():
     :param bool intensity_to_RGB: Whether to copy intensity values to RGB (straight copy I->R I->G I->B, so will show up as greyscale)
     :param bool archive: Archive the input dataset to `./archive` directory
     :param bool verbose: Whether to log more messages
-    '''
-
+    """
     def __init__(self,
                  f: Path,
                  merge: bool=True,
@@ -33,7 +32,7 @@ class Pipeline():
                  geoid_region: str=REGIONS[0],
                  archive: bool=False,
                  verbose: bool=True):
-        '''
+        """
         Initialize the processing pipeline.
 
         :param self self:
@@ -47,7 +46,7 @@ class Pipeline():
         :type translate_z: float or int or False
         :param bool archive: Archive the input dataset to `./archive` directory
         :param bool verbose: Whether to log more messages
-        '''
+        """
         super().__init__()
         global L
         self.starttime = utils.timer()
@@ -94,16 +93,14 @@ class Pipeline():
         self.step = 1
         utils.log_init_stats(self)
 
-
     def run(self) -> Path:
-        '''
+        """
         Process the input LAS file.
 
         :param self self:
         :return: The path of the output directory
         :rtype: pathlib.Path
-        '''
-
+        """
         for d in [self.rewrite_dir, self.archive_dir, self.out_dir]:
             self.L.info('Creating dir %s' % (d))
             utils.make_dirs(d)

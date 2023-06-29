@@ -10,12 +10,12 @@ from . import utils
 
 def log_subprocess_output(pipe: PIPE,
                           verbose: bool=False):
-    '''
+    """
     Log the output from a lastools subprocess.
 
     :param subprocess.PIPE pipe: The pipe to listen to
     :param bool verbose: Whether to log more messages 
-    '''
+    """
     L.propagate = verbose
     try:
         for line in iter(pipe.readline, b''): # b'\n'-separated lines
@@ -27,7 +27,7 @@ def run_proc(command: list[str],
              get_wkt: bool=False,
              get_xy: bool=False,
              verbose: bool=False) -> Union[str, None]:
-    '''
+    """
     Start a subprocess with a given command.
 
     :param list command: List of command arguments
@@ -36,7 +36,7 @@ def run_proc(command: list[str],
 
     :return: Well-known text (WKT) of the file's coordinate reference system (CRS)
     :rtype: str
-    '''
+    """
     L.debug('Command args: %s' % (command))
     process = Popen(command,
                     stdout=PIPE,
@@ -58,7 +58,7 @@ def run_proc(command: list[str],
 
 def lasinfo(f: Path,
             verbose: bool=False) -> Tuple[str, str, str, Path]:
-    '''
+    """
     Use lasinfo to extract CRS info (in EPSG format) from a LAS or LAZ point cloud file.
 
     :param f: The input file
@@ -66,7 +66,7 @@ def lasinfo(f: Path,
 
     :return: The EPSG code of the CRS, and CRS info as WKT
     :rtype: str, str, str, pathlib.Path
-    '''
+    """
     lasinfostart = utils.timer()
     command = [
         LASINFO_LOC,
@@ -113,7 +113,7 @@ def lasmean(f: Path, verbose: bool=False):
 def las2las_ogc_wkt(f: Path,
                     output_file: Path,
                     verbose: bool=False):
-    '''
+    """
     Use las2las to write CRS info in OGC WKT format to the output file.
 
     :param f: The input file
@@ -121,7 +121,7 @@ def las2las_ogc_wkt(f: Path,
     :param output_file: The output file
     :type output_file: str or pathlib.Path
     :param bool verbose: Whether or not to write STDOUT (output will always be written to log file)
-    '''
+    """
     las2lasstart = datetime.now()
     # construct command
     command = [
@@ -143,7 +143,7 @@ def las2las(f: Path,
             rgb_scale: float=1.0,
             translate_z: float=0.0,
             verbose=False):
-    '''
+    """
     Simple wrapper around las2las to repair and rework LAS files.
     LAS is rewritten with valid VLRs to correct errors propagated by processing suites
     e.g. QT Modeler, to be read by software that is picky about LAS format, e.g. PDAL.
@@ -163,7 +163,7 @@ def las2las(f: Path,
     :param float rgb_scale: RGB scale multiplier
     :param float translate_z: Z translation value
     :param bool verbose: Whether or not to write STDOUT (output will always be written to log file)
-    '''
+    """
     las2lasstart = datetime.now()
     # construct command
     wktf = str(f) + '-wkt.txt'

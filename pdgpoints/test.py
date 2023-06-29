@@ -8,13 +8,13 @@ W = MOD_LOC.joinpath(MOD_LOC, 'testdata/lp_jumps_w.laz')
 
 def test(f: list[Path]=[E, W],
          verbose: bool=True):
-    '''
+    """
     Run both halves of the test dataset through the library to test functionality.
 
     Variables:
     :param list f: Two halves of the test dataset to be processed
     :param bool verbose: Whether to log more messages
-    '''
+    """
     merge = False
     for l in f:
         p = Pipeline(f=l,

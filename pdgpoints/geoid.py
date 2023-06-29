@@ -66,8 +66,6 @@ def use_model(user_vrs: Union[str, Literal[None]]=None,
     :return: The model name to use for lookup
     :rtype: str
     """
-
-
     vrs = None
     if las_vrs:
         # override user value with detected VRS
@@ -98,7 +96,6 @@ def use_model(user_vrs: Union[str, Literal[None]]=None,
                 # scenario 6
                 L.error('Could not find VRS matching value "%s"' % (user_vrs))
                 exit(1)
-
     return vrs
 
 def crs_to_wgs84(x: Union[str, int, float], y: Union[str, int, float], from_crs: Union[CRS, int, str]):

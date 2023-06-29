@@ -5,14 +5,14 @@ import sys
 from ._version import __version__
 
 def start_logging(console: bool=True):
-    '''
+    """
     Start the logger.
 
     Variables:
     :param bool console: Print log messages to the console in addition to logfile (default: True)
     :return: Logger to use
     :rtype: logging.logger
-    '''
+    """
     DATE_FMT = '%Y-%m-%dT%H:%M:%S'
     LOG_FMT = "%(asctime)s:%(levelname)s: %(message)s" # overrides import
     L = logging.getLogger('pdgpoints')

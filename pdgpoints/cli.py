@@ -6,10 +6,9 @@ from . import defs
 from .pipeline import Pipeline
 
 def cli():
-    '''
+    """
     Parse the command options and arguments.
-    '''
-
+    """
     parser = argparse.ArgumentParser(prog='pdgpoints', description='Convert LiDAR files (LAS, LAZ) to Cesium tilesets.')
     parser.add_argument('-v', '--verbose', action='store_true', help='Whether to log more messages')
     parser.add_argument('-c', '--copy_I_to_RGB', action='store_true', help='Whether to copy intensity values to RGB')
