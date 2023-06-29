@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Union, Literal
+from pyegt.defs import REGIONS
 
 from . import L
 from . import defs
@@ -29,7 +30,7 @@ class Pipeline():
                  rgb_scale: Union[float, int, Literal[False]]=False,
                  translate_z: Union[float, int, Literal[False]]=False,
                  from_geoid: Union[str, Literal[None]]=None,
-                 geoid_region: str=defs.REGIONS[0],
+                 geoid_region: str=REGIONS[0],
                  archive: bool=False,
                  verbose: bool=True):
         '''
