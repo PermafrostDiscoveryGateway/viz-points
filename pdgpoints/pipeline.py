@@ -79,9 +79,13 @@ class Pipeline():
         except ValueError:
             self.L.warning('Could not convert Z-translation value to float. Not translating Z values.')
             self.translate_z = 0.
+        self.las_crs = None
+        self.x = None
+        self.y = None
         self.from_geoid = from_geoid
-        self.geoid_adj = 0
         self.geoid_region = geoid_region
+        self.ellips_lkup = None
+        self.geoid_adj = 0
         self.archive = archive
         self.merge = merge
         self.steps = 4
@@ -117,7 +121,31 @@ class Pipeline():
         if self.from_geoid or las_vrs:
             self.step += 1
             L.info('Getting mean lat/lon from las file... (step %s of %s)' % (self.step, self.steps))
-            self.x, self.y = lastools_iface.lasmean(f=self.ogcwkt_name, verbose=self.verbose)
+            self.x, self.y = lastools_iface.lasmean(f=self.ogcwkt_name,
+                                                    verbose=self.verbose)
+            self.lat, self.lon = geoid.crs_to_wgs84(x=self.x, y=self.y,
+                                                    from_crs=self.las_crs)
+            L.info('Resolving geoid/tidal model... (step %s of %s)' % (self.step, self.steps))
+            self.from_geoid = geoid.use_model(user_vrs=self.from_geoid,
+                                              las_vrs=las_vrs)
+            L.info('Looking up ellipsoid height of %s at (%.3f, %.3f)... (step %s of %s)' % (self.from_geoid,
+                                                                                             self.x, self.y,
+                                                                                             self.step,
+                                                                                             self.steps))
+            self.ellips_lkup = geoid.get_adjustment(lat=self.lat,
+                                                    lon=self.lon,
+                                                    model=self.from_geoid,
+                                                    region=self.geoid_region)
+            self.geoid_adj = float(self.ellips_lkup)
+            L.info('Manual Z transformation: %+d' % (self.translate_z))
+            L.info('Geoid height adjustment: %+d' % (self.geoid_adj))
+            if self.ellips_lkup:
+                self.translate_z = self.translate_z + self.geoid_adj
+                L.info('Translating Z values by %+d' % (self.translate_z))
+            else:
+                raise LookupError('Could not get ellipsoid height of %s. Query URL: %s' % (self.from_geoid,
+                                                                                           self.lat,
+                                                                                           self.lon))
 
         self.step += 1
         L.info('Starting las2las rewrite... (step %s of %s)' % (self.step, self.steps))

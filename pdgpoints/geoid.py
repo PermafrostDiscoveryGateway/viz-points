@@ -1,4 +1,5 @@
 from typing import Union, Literal
+from pyproj.crs import CRS
 
 from pyegt.height import HeightModel
 from pyegt.utils import model_search
@@ -99,3 +100,42 @@ def use_model(user_vrs: Union[str, Literal[None]]=None,
                 exit(1)
 
     return vrs
+
+def crs_to_wgs84(x: Union[str, int, float], y: Union[str, int, float], from_crs: Union[CRS, int, str]):
+    """
+    Convert grid coordinates to cartographic (lat/lon) in order to use the
+    :py:class:`pyegt.height.HeightModel` API lookup.
+
+    :param x: The X-coordinate to convert to longitude
+    :type x: str or int or float
+    :param y: The Y-coordinate to convert to latitude
+    :type y: str or int or float
+    :param from_crs: The projected coordinate reference system to convert from
+    :type from_crs: pyproj.crs.CRS or int or str
+    :return: The lat and long position equivalent to the X and Y position in the input CRS
+    :rtype: tuple(float, float)
+    """
+    if type(from_crs) == int:
+        crs = CRS.from_epsg(from_crs)
+    elif type(from_crs) == CRS:
+        crs = from_crs
+    elif type(from_crs) == str:
+        if "AUTHORITY" in from_crs:
+            crs = CRS.from_wkt(from_crs)
+        else:
+            crs = CRS.from_string(from_crs)
+    return crs(float(x), float(y))
+
+def get_adjustment(lat: float, lon: float, model=str, region=str):
+    """
+    Get the modeled height of a specified location and a specified geoid or
+    tidal model from :py:class:`pyegt.height.HeightModel`.
+
+    :param float lat: Decimal latitude
+    :param float lon: Decimal longitude
+    :param str model: The geoid or tidal model to query the height of
+    :param str region: The geoid or tidal region (for options, see :py:data:`pyegt.defs.REGION`)
+    :return: The ellipsoid height of the given geoid model at the given location
+    :rtype: pyegt.height.HeightModel
+    """
+    return HeightModel(lat=lat, lon=lon, from_model=model, region=region)
