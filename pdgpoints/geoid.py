@@ -1,5 +1,6 @@
 from typing import Union, Literal
 from pyproj.crs import CRS
+import logging as L
 
 from pyegt.height import HeightModel
 from pyegt.utils import model_search

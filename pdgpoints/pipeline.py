@@ -1,9 +1,8 @@
 from pathlib import Path
 from typing import Union, Literal
 from pyegt.defs import REGIONS
+import logging as L
 
-from . import L
-from . import defs
 from . import utils
 from . import geoid
 from . import lastools_iface
@@ -159,7 +158,7 @@ class Pipeline():
         L.info('Starting tiling process... (step %s of %s)' % (self.step, self.steps))
         py3dtiles_iface.tile(f=self.las_name,
                              out_dir=self.out_dir,
-                             las_crs=las_crs,
+                             las_crs=self.las_crs,
                              out_crs='4978',
                              verbose=self.verbose)
 

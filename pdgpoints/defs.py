@@ -1,6 +1,9 @@
 from pathlib import Path
-from ._version import __version__
+import json
+from pathlib import Path
 from datetime import datetime
+
+from ._version import __version__
 
 Y = datetime.now().year
 HELP_TXT = '''
@@ -12,3 +15,6 @@ MOD_LOC = Path(__file__).parent.absolute()
 BIN_LOC = MOD_LOC.joinpath('bin')
 LAS2LAS_LOC = BIN_LOC.joinpath('las2las')
 LASINFO_LOC = BIN_LOC.joinpath('lasinfo')
+
+LOGCONFIG = Path('log/config.json')
+LOGGING_CONFIG = json.load(LOGCONFIG)

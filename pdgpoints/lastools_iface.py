@@ -3,9 +3,9 @@ from typing import Union, Tuple
 from subprocess import Popen, PIPE, STDOUT, CalledProcessError, check_output
 from datetime import datetime
 import pandas as pd
+import logging as L
 
 from .defs import LAS2LAS_LOC, LASINFO_LOC
-from . import L
 from . import utils
 
 def log_subprocess_output(pipe: PIPE,

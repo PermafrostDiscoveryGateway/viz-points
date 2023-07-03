@@ -2,6 +2,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Union
 from pyproj import CRS
+import logging as L
 
 def timer(time: Union[datetime, bool]=False) -> Union[datetime, int, float]:
     """

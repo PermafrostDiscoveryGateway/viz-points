@@ -3,8 +3,9 @@ from pathlib import Path
 from typing import Union
 from py3dtiles import convert, merger
 from py3dtiles.utils import str_to_CRS
+import logging as L
 
-from . import L, utils
+from . import utils
 
 def log_tileset_error(e: Union[ValueError, RuntimeError]):
     """

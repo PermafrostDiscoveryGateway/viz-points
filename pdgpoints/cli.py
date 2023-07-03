@@ -2,7 +2,7 @@ from pathlib import Path
 import argparse
 from pyegt.defs import MODEL_LIST, REGIONS
 
-from . import L
+import logging as L
 from .pipeline import Pipeline
 
 def cli():
