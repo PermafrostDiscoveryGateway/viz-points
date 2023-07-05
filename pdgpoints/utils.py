@@ -64,18 +64,19 @@ def read_wkt_from_file(f: Path) -> str:
     with open(f, 'r') as fr:
         return fr.read()
 
-def get_epsgs_from_wkt(wkt: str) -> list:
+def get_epsgs_from_wkt(wkt: str) -> tuple:
     """
-    Use pyproj to parse a well-known text string to CRS. Returns a list of
-    `[CRS, horizontal EPSG, vertical EPSG]` where the EPSG fields could be
-    an integer representing an EPSG code or `None`.
+    Use pyproj to parse a well-known text string to CRS. Returns a tuple of
+    `[CRS, horizontal EPSG, vertical EPSG, horizontal CRS name, vertical CRS name]`
+    where the EPSG fields could be an integer representing an EPSG code or `None`.
 
     :param str wkt: The well-known text string to parse to pyproj.crs.CRS
-    :return: List of [pyproj.crs.CRS object, epsg_h (int or None), epsg_v (int or None)])
-    :rtype: list
+    :return: CRS object, horizontal EPSG, vertical EPSG, horizontal name, vertical name
+    :rtype: tuple
     """
     L = getLogger(__name__)
     epsg_h, epsg_v = None, None
+    h_name, v_name = None, None
     crs = CRS.from_wkt(wkt)
     if crs.is_compound:
         L.info('Found compound coordinate system (COMPD_CS): %s entries' % (len(crs.sub_crs_list)))
@@ -84,18 +85,22 @@ def get_epsgs_from_wkt(wkt: str) -> list:
         for c in crs:
             if c.is_vertical:
                 epsg_v = c.to_epsg()
+                v_name = c.name
             else:
                 epsg_h = c.to_epsg()
+                h_name = c.name
     else:
         if crs.is_vertical:
             epsg_v = crs.to_epsg()
+            v_name = crs.name
         else:
             epsg_h = crs.to_epsg()
+            h_name = crs.name
     if epsg_h:
-        L.info('Found horizontal EPSG: %s' % (epsg_h))
+        L.info('Found horizontal EPSG: %s (%s)' % (epsg_h, h_name))
     if epsg_v:
-        L.info('Found vertical EPSG: %s' % (epsg_v))
-    return crs, epsg_h, epsg_v
+        L.info('Found vertical EPSG: %s (%s)' % (epsg_v, v_name))
+    return crs, epsg_h, epsg_v, h_name, v_name
 
 
 def log_init_stats(self):
@@ -109,10 +114,10 @@ def log_init_stats(self):
     self.L.info('Intensity > RGB: %s' % (self.intensity_to_RGB))
     self.L.info('Intens. scalar:  %sx' % (self.rgb_scale))
     self.L.info('Translate Z:     %+.1f' % (self.translate_z))
+    self.L.info('From geoid:      %s' % (self.from_geoid))
     self.L.info('Archive input:   %s' % (self.archive))
     self.L.info('Given name:      %s' % (self.given_name))
     self.L.info('File extension:  %s' % (self.ext))
-    self.L.info('Verbose:         %s' % (self.L.propagate))
     self.L.debug('base_dir:        %s' % (self.base_dir))
     self.L.debug('bn:              %s' % (self.bn))
     self.L.debug('rewrite_dir:     %s' % (self.rewrite_dir))

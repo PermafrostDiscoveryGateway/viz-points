@@ -1,5 +1,5 @@
 from typing import Union, Literal
-from pyproj.crs import CRS
+from pyproj import CRS, Transformer
 from logging import getLogger
 
 from pyegt.height import HeightModel
@@ -123,7 +123,9 @@ def crs_to_wgs84(x: Union[str, int, float], y: Union[str, int, float], from_crs:
             crs = CRS.from_wkt(from_crs)
         else:
             crs = CRS.from_string(from_crs)
-    return crs(float(x), float(y))
+    wgs84 = CRS.from_epsg(4326)
+    t = Transformer.from_crs(crs_from=crs, crs_to=wgs84)
+    return t.transform(xx=float(x), yy=float(y))
 
 def get_adjustment(lat: float, lon: float, model=str, region=str):
     """

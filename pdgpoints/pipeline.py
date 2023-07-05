@@ -105,19 +105,20 @@ class Pipeline():
 
         self.step += 1
         L.info('Doing lasinfo dump... (step %s of %s)' % (self.step, self.steps))
-        self.las_crs, las_vrs, self.wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name)
+        self.las_crs, las_vrs, self.wkt, wktf, h_name, v_name = lastools_iface.lasinfo(f=self.ogcwkt_name)
         
         if self.from_geoid or las_vrs:
+            L.info('self.from_geoid="%s", las_vrs="%s"' % (self.from_geoid, las_vrs))
             self.step += 1
             L.info('Getting mean lat/lon from las file... (step %s of %s)' % (self.step, self.steps))
-            self.x, self.y = lastools_iface.lasmean(f=self.ogcwkt_name)
+            self.x, self.y = lastools_iface.lasmean(f=self.ogcwkt_name, name=h_name)
             self.lat, self.lon = geoid.crs_to_wgs84(x=self.x, y=self.y,
                                                     from_crs=self.las_crs)
             L.info('Resolving geoid/tidal model... (step %s of %s)' % (self.step, self.steps))
             self.from_geoid = geoid.use_model(user_vrs=self.from_geoid,
                                               las_vrs=las_vrs)
             L.info('Looking up ellipsoid height of %s at (%.3f, %.3f)... (step %s of %s)' % (self.from_geoid,
-                                                                                             self.x, self.y,
+                                                                                             self.lat, self.lon,
                                                                                              self.step,
                                                                                              self.steps))
             self.ellips_lkup = geoid.get_adjustment(lat=self.lat,
@@ -125,11 +126,11 @@ class Pipeline():
                                                     model=self.from_geoid,
                                                     region=self.geoid_region)
             self.geoid_adj = float(self.ellips_lkup)
-            L.info('Manual Z transformation: %+d' % (self.translate_z))
-            L.info('Geoid height adjustment: %+d' % (self.geoid_adj))
+            L.info('Manual Z transformation: %.3f' % (self.translate_z))
+            L.info('Geoid height adjustment: %.3f' % (self.geoid_adj))
             if self.ellips_lkup:
                 self.translate_z = self.translate_z + self.geoid_adj
-                L.info('Translating Z values by %+d' % (self.translate_z))
+                L.info('Translating Z values by %.3f' % (self.translate_z))
             else:
                 raise LookupError('Could not get ellipsoid height of %s. Query URL: %s' % (self.from_geoid,
                                                                                            self.lat,

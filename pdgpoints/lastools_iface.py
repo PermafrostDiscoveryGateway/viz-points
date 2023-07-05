@@ -18,13 +18,12 @@ def log_subprocess_output(pipe: PIPE):
     L = getLogger(__name__)
     try:
         for line in iter(pipe.readline, b''): # b'\n'-separated lines
-            L.info('subprocess output: %r', line.decode('utf-8'.strip()))
+            L.info('subprocess output: %r', line.decode('utf-8').strip())
     except CalledProcessError as e:
         L.error("Subprocess Error> %s: %s" % (repr(e), str(e)))
 
 def run_proc(command: list[str],
-             get_wkt: bool=False,
-             get_xy: bool=False) -> Union[str, None]:
+             get_wkt: bool=False) -> Union[str, None]:
     """
     Start a subprocess with a given command.
 
@@ -52,8 +51,6 @@ def run_proc(command: list[str],
         exit(1)
     if get_wkt:
         return wktstr
-    if get_xy:
-        return process.stdout
 
 def lasinfo(f: Path) -> Tuple[str, str, str, Path]:
     """
@@ -75,16 +72,19 @@ def lasinfo(f: Path) -> Tuple[str, str, str, Path]:
     ]
     wkt = run_proc(command=command, get_wkt=True)
     L.debug('WKT string: %s' % (wkt))
-    crs, epsg_h, epsg_v = utils.get_epsgs_from_wkt(wkt)
+    crs, epsg_h, epsg_v, h_name, v_name = utils.get_epsgs_from_wkt(wkt)
     cpd = 'Compound ' if crs.is_compound else ''
-    L.info('%sCRS object: \n%s' % (cpd, repr(crs)))
+    L.info('%sCRS: %s' % (cpd, h_name))
+    L.info('%sVRS: %s' % (cpd, v_name))
+    L.debug('%sCRS object: \n%s' % (cpd, repr(crs)))
     wktf = Path(str(f) + '-wkt.txt')
     L.info('Writing WKT to %s' % (wktf))
     utils.write_wkt_to_file(f=wktf, wkt=wkt)
     L.info('Finished lasinfo (%s sec / %.1f min)' % utils.timer(lasinfostart))
-    return epsg_h, epsg_v, wkt, wktf
+    return epsg_h, epsg_v, wkt, wktf, h_name, v_name
 
-def lasmean(f: Path):
+def lasmean(f: Path,
+            name: str="none"):
     """
     Use las2txt to output values of X and Y for a dataset,
     then return the mean of those points. To save resources,
@@ -92,22 +92,27 @@ def lasmean(f: Path):
 
     :param f: The input file
     :type f: str or pathlib.Path
+    :param str name: The name of the coordinate reference system in use
     :return: Mean X and Y of the dataset
     :rtype: float, float
     """
     L = getLogger(__name__)
     lasmeanstart = utils.timer()
     xyf = Path(str(f) + '-xy.txt')
+    L.info("Writing abridged XY file to %s" % (xyf))
     command = [
         LAS2LAS_LOC,
         '-i', f,
         '-keep_every_nth', '10000',
-        '-stdout',
+        '-o', str(xyf),
         '-oparse', 'xy'
     ]
-    data = run_proc(command=command, get_xy=True)
-    df = pd.read_csv(data, sep=' ', header=None, names=['x', 'y'])
+    run_proc(command=command)
+    df = pd.read_csv(xyf, sep=' ', header=None, names=['x', 'y'])
     mean = df.mean()
+    L.info('X mean: %.3f Y mean: %.3f (%s)' % (mean.x, mean.y, name))
+    lasmeantime = (datetime.now() - lasmeanstart).seconds
+    L.info('Finished las2las (%s sec / %.1f min)' % (lasmeantime, lasmeantime/60))
     return mean.x, mean.y
 
 def las2las_ogc_wkt(f: Path,

@@ -70,7 +70,7 @@ def tile(f: Path,
                                  force_crs_in=True,
                                  rgb=True,
                                  benchmark=True,
-                                 verbose=True)
+                                 verbose=False)
     converter.convert()
 
     L.info('Finished tiling (%s sec / %.1f min)' % utils.timer(tilestart))
