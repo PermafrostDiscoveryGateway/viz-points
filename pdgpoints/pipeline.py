@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Union, Literal
 from pyegt.defs import REGIONS
-import logging as L
+from logging import getLogger
 
 from . import utils
 from . import geoid
@@ -29,8 +29,7 @@ class Pipeline():
                  translate_z: Union[float, int, Literal[False]]=False,
                  from_geoid: Union[str, Literal[None]]=None,
                  geoid_region: str=REGIONS[0],
-                 archive: bool=False,
-                 verbose: bool=True):
+                 archive: bool=False):
         """
         Initialize the processing pipeline.
 
@@ -47,14 +46,9 @@ class Pipeline():
         :param bool verbose: Whether to log more messages
         """
         super().__init__()
-        global L
         self.starttime = utils.timer()
-        if verbose:
-            L.setLevel('DEBUG')
-        L.propagate = verbose
-        self.verbose = verbose
         self.auto = False # if auto-processing
-        self.L = L
+        self.L = getLogger(__name__)
         self.L.debug('Initializing pipeline.')
         self.f = Path(f).absolute()
         self.base_dir = self.f.parent.absolute()
@@ -100,25 +94,23 @@ class Pipeline():
         :return: The path of the output directory
         :rtype: pathlib.Path
         """
+        L = getLogger(__name__)
         for d in [self.rewrite_dir, self.archive_dir, self.out_dir]:
             self.L.info('Creating dir %s' % (d))
             utils.make_dirs(d)
 
         L.info('Rewriting file with new OGC WKT... (step %s of %s)' % (self.step, self.steps))
         lastools_iface.las2las_ogc_wkt(f=self.f,
-                                       output_file=self.ogcwkt_name,
-                                       verbose=self.verbose)
+                                       output_file=self.ogcwkt_name)
 
         self.step += 1
         L.info('Doing lasinfo dump... (step %s of %s)' % (self.step, self.steps))
-        self.las_crs, las_vrs, self.wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name,
-                                              verbose=self.verbose)
+        self.las_crs, las_vrs, self.wkt, wktf = lastools_iface.lasinfo(f=self.ogcwkt_name)
         
         if self.from_geoid or las_vrs:
             self.step += 1
             L.info('Getting mean lat/lon from las file... (step %s of %s)' % (self.step, self.steps))
-            self.x, self.y = lastools_iface.lasmean(f=self.ogcwkt_name,
-                                                    verbose=self.verbose)
+            self.x, self.y = lastools_iface.lasmean(f=self.ogcwkt_name)
             self.lat, self.lon = geoid.crs_to_wgs84(x=self.x, y=self.y,
                                                     from_crs=self.las_crs)
             L.info('Resolving geoid/tidal model... (step %s of %s)' % (self.step, self.steps))
@@ -151,23 +143,20 @@ class Pipeline():
                                intensity_to_RGB=self.intensity_to_RGB,
                                archive=self.archive,
                                rgb_scale=self.rgb_scale,
-                               translate_z=self.translate_z,
-                               verbose=self.verbose)
+                               translate_z=self.translate_z)
 
         self.step += 1
         L.info('Starting tiling process... (step %s of %s)' % (self.step, self.steps))
         py3dtiles_iface.tile(f=self.las_name,
                              out_dir=self.out_dir,
                              las_crs=self.las_crs,
-                             out_crs='4978',
-                             verbose=self.verbose)
+                             out_crs='4978')
 
         if self.merge:
             self.step += 1
             L.info('Starting merge process... (step %s of %s)' % (self.step, self.steps))
             py3dtiles_iface.merge(dir=self.out_dir,
-                                  overwrite=True,
-                                  verbose=self.verbose)
+                                  overwrite=True)
 
         L.info('Cleaning up processing artifacts.')
         files = [self.ogcwkt_name, wktf]

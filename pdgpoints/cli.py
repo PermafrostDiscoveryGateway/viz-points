@@ -10,7 +10,6 @@ def cli():
     Parse the command options and arguments.
     """
     parser = argparse.ArgumentParser(prog='pdgpoints', description='Convert LiDAR files (LAS, LAZ) to Cesium tilesets.')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Whether to log more messages')
     parser.add_argument('-c', '--copy_I_to_RGB', action='store_true', help='Whether to copy intensity values to RGB')
     parser.add_argument('-m', '--merge', action='store_true', help='Whether to use merge function')
     parser.add_argument('-a', '--archive', action='store_true', help='Whether to archive the input dataset')
@@ -33,6 +32,5 @@ def cli():
                  rgb_scale=args.rgb_scale,
                  translate_z=args.translate_z,
                  from_vdatum=args.from_vdatum,
-                 geoid_region=args.geoid_region,
-                 verbose=args.verbose)
+                 geoid_region=args.geoid_region)
     p.run()

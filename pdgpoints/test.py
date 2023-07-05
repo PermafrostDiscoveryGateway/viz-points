@@ -1,5 +1,5 @@
 from pathlib import Path
-import logging as L
+from logging import getLogger
 
 from .pipeline import Pipeline
 from .defs import MOD_LOC
@@ -16,6 +16,7 @@ def test(f: list[Path]=[E, W],
     :param list f: Two halves of the test dataset to be processed
     :param bool verbose: Whether to log more messages
     """
+    L = getLogger(__name__)
     merge = False
     for l in f:
         p = Pipeline(f=l,
@@ -23,7 +24,7 @@ def test(f: list[Path]=[E, W],
                      merge=merge,
                      archive=True,
                      rgb_scale=2.0,
-                     translate_z=-28.143, # geoid height at https://geodesy.noaa.gov/api/geoid/ght?lat=44.25&lon=-73.96
-                     verbose=verbose)
+                     #translate_z=-28.143, # geoid height at https://geodesy.noaa.gov/api/geoid/ght?lat=44.25&lon=-73.96
+                     from_geoid='GEOID18')
         p.run()
         merge = True

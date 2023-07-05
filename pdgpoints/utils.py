@@ -2,7 +2,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Union
 from pyproj import CRS
-import logging as L
+from logging import getLogger
 
 def timer(time: Union[datetime, bool]=False) -> Union[datetime, int, float]:
     """
@@ -74,6 +74,7 @@ def get_epsgs_from_wkt(wkt: str) -> list:
     :return: List of [pyproj.crs.CRS object, epsg_h (int or None), epsg_v (int or None)])
     :rtype: list
     """
+    L = getLogger(__name__)
     epsg_h, epsg_v = None, None
     crs = CRS.from_wkt(wkt)
     if crs.is_compound:

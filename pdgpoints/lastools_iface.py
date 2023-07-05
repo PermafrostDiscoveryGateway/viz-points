@@ -3,20 +3,19 @@ from typing import Union, Tuple
 from subprocess import Popen, PIPE, STDOUT, CalledProcessError, check_output
 from datetime import datetime
 import pandas as pd
-import logging as L
+from logging import getLogger
 
 from .defs import LAS2LAS_LOC, LASINFO_LOC
 from . import utils
 
-def log_subprocess_output(pipe: PIPE,
-                          verbose: bool=False):
+def log_subprocess_output(pipe: PIPE):
     """
     Log the output from a lastools subprocess.
 
     :param subprocess.PIPE pipe: The pipe to listen to
     :param bool verbose: Whether to log more messages 
     """
-    L.propagate = verbose
+    L = getLogger(__name__)
     try:
         for line in iter(pipe.readline, b''): # b'\n'-separated lines
             L.info('subprocess output: %r', line.decode('utf-8'.strip()))
@@ -25,8 +24,7 @@ def log_subprocess_output(pipe: PIPE,
 
 def run_proc(command: list[str],
              get_wkt: bool=False,
-             get_xy: bool=False,
-             verbose: bool=False) -> Union[str, None]:
+             get_xy: bool=False) -> Union[str, None]:
     """
     Start a subprocess with a given command.
 
@@ -37,6 +35,7 @@ def run_proc(command: list[str],
     :return: Well-known text (WKT) of the file's coordinate reference system (CRS)
     :rtype: str
     """
+    L = getLogger(__name__)
     L.debug('Command args: %s' % (command))
     process = Popen(command,
                     stdout=PIPE,
@@ -45,7 +44,7 @@ def run_proc(command: list[str],
         wktstr = check_output(('grep', 'EPSG'), stdin=process.stdout).decode().strip().strip('\n')
     # pass pipe to be parsed
     with process.stdout:
-        log_subprocess_output(process.stdout, verbose=verbose)
+        log_subprocess_output(process.stdout)
     # start subprocess
     exitcode = process.wait()
     if exitcode != 0:
@@ -56,8 +55,7 @@ def run_proc(command: list[str],
     if get_xy:
         return process.stdout
 
-def lasinfo(f: Path,
-            verbose: bool=False) -> Tuple[str, str, str, Path]:
+def lasinfo(f: Path) -> Tuple[str, str, str, Path]:
     """
     Use lasinfo to extract CRS info (in EPSG format) from a LAS or LAZ point cloud file.
 
@@ -67,6 +65,7 @@ def lasinfo(f: Path,
     :return: The EPSG code of the CRS, and CRS info as WKT
     :rtype: str, str, str, pathlib.Path
     """
+    L = getLogger(__name__)
     lasinfostart = utils.timer()
     command = [
         LASINFO_LOC,
@@ -74,7 +73,7 @@ def lasinfo(f: Path,
         '-nc', # shaves a lot of time off large jobs by telling lasinfo not to compute min/maxes
         '-stdout',
     ]
-    wkt = run_proc(command=command, get_wkt=True, verbose=verbose)
+    wkt = run_proc(command=command, get_wkt=True)
     L.debug('WKT string: %s' % (wkt))
     crs, epsg_h, epsg_v = utils.get_epsgs_from_wkt(wkt)
     cpd = 'Compound ' if crs.is_compound else ''
@@ -85,7 +84,7 @@ def lasinfo(f: Path,
     L.info('Finished lasinfo (%s sec / %.1f min)' % utils.timer(lasinfostart))
     return epsg_h, epsg_v, wkt, wktf
 
-def lasmean(f: Path, verbose: bool=False):
+def lasmean(f: Path):
     """
     Use las2txt to output values of X and Y for a dataset,
     then return the mean of those points. To save resources,
@@ -96,6 +95,7 @@ def lasmean(f: Path, verbose: bool=False):
     :return: Mean X and Y of the dataset
     :rtype: float, float
     """
+    L = getLogger(__name__)
     lasmeanstart = utils.timer()
     xyf = Path(str(f) + '-xy.txt')
     command = [
@@ -105,14 +105,13 @@ def lasmean(f: Path, verbose: bool=False):
         '-stdout',
         '-parse', 'xy'
     ]
-    data = run_proc(command=command, get_xy=True, verbose=verbose)
+    data = run_proc(command=command, get_xy=True)
     df = pd.read_csv(data, sep=' ', header=None, names=['x', 'y'])
     mean = df.mean()
     return mean.x, mean.y
 
 def las2las_ogc_wkt(f: Path,
-                    output_file: Path,
-                    verbose: bool=False):
+                    output_file: Path):
     """
     Use las2las to write CRS info in OGC WKT format to the output file.
 
@@ -122,6 +121,7 @@ def las2las_ogc_wkt(f: Path,
     :type output_file: str or pathlib.Path
     :param bool verbose: Whether or not to write STDOUT (output will always be written to log file)
     """
+    L = getLogger(__name__)
     las2lasstart = datetime.now()
     # construct command
     command = [
@@ -130,7 +130,7 @@ def las2las_ogc_wkt(f: Path,
             '-set_ogc_wkt',
             '-o', output_file
         ]
-    run_proc(command=command, verbose=verbose)
+    run_proc(command=command)
     las2lastime = (datetime.now() - las2lasstart).seconds
     L.info('Finished las2las (%s sec / %.1f min)' % (las2lastime, las2lastime/60))
 
@@ -141,8 +141,7 @@ def las2las(f: Path,
             archive: bool=False,
             intensity_to_RGB: bool=False,
             rgb_scale: float=1.0,
-            translate_z: float=0.0,
-            verbose=False):
+            translate_z: float=0.0):
     """
     Simple wrapper around las2las to repair and rework LAS files.
     LAS is rewritten with valid VLRs to correct errors propagated by processing suites
@@ -164,6 +163,7 @@ def las2las(f: Path,
     :param float translate_z: Z translation value
     :param bool verbose: Whether or not to write STDOUT (output will always be written to log file)
     """
+    L = getLogger(__name__)
     las2lasstart = datetime.now()
     # construct command
     wktf = str(f) + '-wkt.txt'
@@ -204,7 +204,7 @@ def las2las(f: Path,
             '-translate_z', '%s' % (translate_z),
             '-o', output_file
         ]
-        run_proc(command=command, verbose=verbose)
+        run_proc(command=command)
 
     if archive:
         # move the file to the archive

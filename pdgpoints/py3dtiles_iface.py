@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Union
 from py3dtiles import convert, merger
 from py3dtiles.utils import str_to_CRS
-import logging as L
+from logging import getLogger
 
 from . import utils
 
@@ -15,6 +15,7 @@ def log_tileset_error(e: Union[ValueError, RuntimeError]):
     :param e: Error object
     :type e: ValueError or RuntimeError
     """
+    L = getLogger(__name__)
     L.error('Got "%s" error from py3dtiles.merger.merge' % (repr(e)))
     L.warning('The above error means that there was only one tileset directory '
               'in the output folder. The merged tileset could not be created. '
@@ -28,6 +29,7 @@ def rm_file(f: Path):
     :param f: File to remove
     :type f: pathlib.Path
     """
+    L = getLogger(__name__)
     try:
         L.info('Cleaning up previous merge artifact %s' % (f))
         f.unlink()
@@ -37,8 +39,7 @@ def rm_file(f: Path):
 def tile(f: Path,
          out_dir: Path,
          las_crs: str,
-         out_crs: str='4978',
-         verbose=False):
+         out_crs: str='4978'):
     """
     Use py3dtiles.converter.convert() to create 3dtiles from a LAS or LAZ file.
 
@@ -51,6 +52,7 @@ def tile(f: Path,
     :param str out_crs: CRS of the output tileset
     :param bool verbose: Whether to log more messages
     """
+    L = getLogger(__name__)
     tilestart = utils.timer()
     L.info('File: %s' % (f))
     L.info('Creating tile directory')
@@ -68,15 +70,14 @@ def tile(f: Path,
                                  force_crs_in=True,
                                  rgb=True,
                                  benchmark=True,
-                                 verbose=verbose)
+                                 verbose=True)
     converter.convert()
 
     L.info('Finished tiling (%s sec / %.1f min)' % utils.timer(tilestart))
 
 
 def merge(dir: Path,
-          overwrite: bool=False,
-          verbose: bool=False):
+          overwrite: bool=False):
     """
     Use py3dtiles.merger.merge() to merge more than one 3dtiles dataset.
     This function will search for `tileset.json` files in subdirectories
@@ -89,6 +90,7 @@ def merge(dir: Path,
     :param bool overwrite: Whether to overwrite existing mergers in the output directory (default: False)
     :param bool verbose: Whether to log more messages
     """
+    L = getLogger(__name__)
     L.info('Output dir: %s' % dir)
     mergestart = utils.timer()
 

@@ -1,6 +1,6 @@
 from typing import Union, Literal
 from pyproj.crs import CRS
-import logging as L
+from logging import getLogger
 
 from pyegt.height import HeightModel
 from pyegt.utils import model_search
@@ -67,6 +67,7 @@ def use_model(user_vrs: Union[str, Literal[None]]=None,
     :return: The model name to use for lookup
     :rtype: str
     """
+    L = getLogger(__name__)
     vrs = None
     if las_vrs:
         # override user value with detected VRS
