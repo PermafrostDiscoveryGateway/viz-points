@@ -103,7 +103,7 @@ def lasmean(f: Path):
         '-i', f,
         '-keep_every_nth', '10000',
         '-stdout',
-        '-parse', 'xy'
+        '-oparse', 'xy'
     ]
     data = run_proc(command=command, get_xy=True)
     df = pd.read_csv(data, sep=' ', header=None, names=['x', 'y'])
