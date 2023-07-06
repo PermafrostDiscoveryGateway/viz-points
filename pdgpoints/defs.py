@@ -15,6 +15,6 @@ BIN_LOC = MOD_LOC.joinpath('bin')
 LAS2LAS_LOC = BIN_LOC.joinpath('las2las')
 LASINFO_LOC = BIN_LOC.joinpath('lasinfo')
 
-LOGCONFIG = Path('pdgpoints/log/config.json')
+LOGCONFIG = MOD_LOC.joinpath('log/config.json')
 with open(LOGCONFIG, 'r') as lc:
     LOGGING_CONFIG = json.load(lc)

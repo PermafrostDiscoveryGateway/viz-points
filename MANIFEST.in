@@ -1,2 +1,3 @@
 include pdgpoints/bin/*
 include pdgpoints/testdata/*
+include pdgpoints/log/*
