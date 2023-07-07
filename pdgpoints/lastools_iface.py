@@ -93,8 +93,8 @@ def lasmean(f: Path,
     :param f: The input file
     :type f: str or pathlib.Path
     :param str name: The name of the coordinate reference system in use
-    :return: Mean X and Y of the dataset
-    :rtype: float, float
+    :return: Mean X and Y of the dataset, and the location of the ascii file used to calculate these
+    :rtype: float, float, str
     """
     L = getLogger(__name__)
     lasmeanstart = utils.timer()
@@ -113,7 +113,7 @@ def lasmean(f: Path,
     L.info('X mean: %.3f Y mean: %.3f (%s)' % (mean.x, mean.y, name))
     lasmeantime = (datetime.now() - lasmeanstart).seconds
     L.info('Finished las2las (%s sec / %.1f min)' % (lasmeantime, lasmeantime/60))
-    return mean.x, mean.y
+    return mean.x, mean.y, xyf
 
 def las2las_ogc_wkt(f: Path,
                     output_file: Path):

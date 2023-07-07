@@ -111,7 +111,7 @@ class Pipeline():
             L.info('self.from_geoid="%s", las_vrs="%s"' % (self.from_geoid, las_vrs))
             self.step += 1
             L.info('Getting mean lat/lon from las file... (step %s of %s)' % (self.step, self.steps))
-            self.x, self.y = lastools_iface.lasmean(f=self.ogcwkt_name, name=h_name)
+            self.x, self.y, xyf = lastools_iface.lasmean(f=self.ogcwkt_name, name=h_name)
             self.lat, self.lon = geoid.crs_to_wgs84(x=self.x, y=self.y,
                                                     from_crs=self.las_crs)
             L.info('Resolving geoid/tidal model... (step %s of %s)' % (self.step, self.steps))
@@ -160,7 +160,7 @@ class Pipeline():
                                   overwrite=True)
 
         L.info('Cleaning up processing artifacts.')
-        files = [self.ogcwkt_name, wktf]
+        files = [self.ogcwkt_name, wktf, xyf]
         if not self.archive:
             files.append(self.las_name)
         L.debug('Removing files: %s' % (files))
