@@ -19,6 +19,11 @@ setuptools.setup(
         'py3dtiles @ git+https://gitlab.com/Oslandia/py3dtiles.git@68cdcd9080994d38614d3aa5db75cea2456298cf',
         'pdal'
     ],
+    extras_require={
+        'dev': [
+            'sphinx',
+        ]
+    },
     entry_points = {
         'console_scripts': [
             'tilepoints=pdgpoints.cli:cli',
