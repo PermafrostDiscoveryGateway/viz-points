@@ -82,7 +82,7 @@ def get_epsgs_from_wkt(wkt: str) -> tuple:
         L.info('Found compound coordinate system (COMPD_CS): %s entries' % (len(crs.sub_crs_list)))
         if len(crs.sub_crs_list) > 2: # not sure if this case exists, but should be warned anyway
             L.warning('More than 2 entries in a compound coordinate system may cause an unwanted override!')
-        for c in crs:
+        for c in crs.sub_crs_list:
             if c.is_vertical:
                 epsg_v = c.to_epsg()
                 v_name = c.name
