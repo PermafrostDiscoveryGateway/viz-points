@@ -69,9 +69,11 @@ def use_model(user_vrs: Union[str, Literal[None]]=None,
     """
     L = getLogger(__name__)
     vrs = None
+    L.debug(f'user_vrs={user_vrs}, las_vrs={las_vrs}')
     if las_vrs:
         # override user value with detected VRS
         vrs = model_search(las_vrs)
+        L.debug(f'after model_search(las_vrs): vrs={vrs}')
         if user_vrs and vrs:
             # scenarios 1 and 2
             L.info('User value of "%s" will be overridden by detected VRS "%s"' % (user_vrs, vrs))
@@ -91,6 +93,7 @@ def use_model(user_vrs: Union[str, Literal[None]]=None,
             return 0
         else:
             vrs = model_search(user_vrs)
+            L.debug(f'after model_search(user_vrs): vrs={vrs}')
             if vrs:
                 # scenario 5
                 L.info('VRS found: %s (user-specified)' % (vrs))
