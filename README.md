@@ -129,3 +129,11 @@ function start(){// Your access token can be found at: https://cesium.com/ion/to
 
 start()
 ```
+
+# Referencing this repository
+
+If you would like to cite this repository, we suggest using something like the following:
+
+```
+Ian M. Nesbitt, Robyn Theissen-Bock, and Matthew B. Jones (NCEAS). viz-points: A Python package for post-processing point-cloud data for 3D visualization. https://github.com/PermafrostDiscoveryGateway/viz-points.
+```
