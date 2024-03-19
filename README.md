@@ -135,5 +135,5 @@ start()
 If you would like to cite this repository, we suggest using something like the following:
 
 ```
-Ian M. Nesbitt, Robyn Theissen-Bock, and Matthew B. Jones (NCEAS). viz-points: A Python package for post-processing point-cloud data for 3D visualization. https://github.com/PermafrostDiscoveryGateway/viz-points.
+Ian M. Nesbitt, Robyn Thiessen-Bock, and Matthew B. Jones (NCEAS). viz-points: A Python package for post-processing point-cloud data for 3D visualization. https://github.com/PermafrostDiscoveryGateway/viz-points.
 ```
