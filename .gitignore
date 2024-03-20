@@ -4,6 +4,9 @@ pdgpoints/testdata/tileset.json
 pdgpoints/testdata/*[.txt|.zip]
 pdgpoints/testdata/*/
 
+# logging
+pdgpoints/log/config.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
