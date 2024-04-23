@@ -135,7 +135,8 @@ class Pipeline():
         self.step += 1
         L.info('Doing lasinfo dump... (step %s of %s)' % (self.step, self.steps))
         self.las_crs, las_vrs, self.wkt, wktf, h_name, v_name = lastools_iface.lasinfo(f=self.ogcwkt_name)
-        
+
+        xyf = None
         if self.from_geoid or las_vrs:
             L.info('self.from_geoid="%s", las_vrs="%s"' % (self.from_geoid, las_vrs))
             self.step += 1
@@ -189,7 +190,7 @@ class Pipeline():
                                   overwrite=True)
 
         L.info('Cleaning up processing artifacts.')
-        files = [self.ogcwkt_name, wktf, xyf]
+        files = [self.ogcwkt_name, wktf, xyf] if xyf else [self.ogcwkt_name, wktf]
         if not self.archive:
             files.append(self.las_name)
         L.debug('Removing files: %s' % (files))
