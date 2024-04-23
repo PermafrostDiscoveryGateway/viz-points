@@ -128,7 +128,7 @@ class Pipeline():
             utils.make_dirs(d)
 
         if self.llvs:
-            L.info('Converting CSV with LLVS format (lat, lon, displacement, stdev) to LAZ... (step %s of %s)' % (self.step, self.steps))
+            L.info('Converting CSV with LLVS format (lon, lat, displacement, stdev) to LAZ... (step %s of %s)' % (self.step, self.steps))
             self.f = llvs2laz.insar_pipeline(f=self.f, quantile=self.quantile)
             self.set_paths(self.f)
 

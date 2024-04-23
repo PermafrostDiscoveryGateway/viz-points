@@ -6,7 +6,7 @@ from . import viridis
 def load_llvs(f: Path, std: bool=False):
     """
     """
-    cols = ['lat', 'lon', 'disp', 'std']
+    cols = ['lon', 'lat', 'disp', 'std']
     usecols = [0, 1, 2, 3] if std else [0, 1, 2]
     return pd.read_csv(f, names=cols, header=None, usecols=usecols)
 
@@ -15,9 +15,9 @@ def add_z(llvs: pd.DataFrame, std: bool=False):
     """
     llvs['z'] = 0
     if std:
-        return llvs[['lat', 'lon', 'z', 'disp', 'std']]
+        return llvs[['lon', 'lat', 'z', 'disp', 'std']]
     else:
-        return llvs[['lat', 'lon', 'z', 'disp']]
+        return llvs[['lon', 'lat', 'z', 'disp']]
 
 def get_rgb(llvs: pd.DataFrame, quantile: bool=False, std: bool=False):
     """
@@ -41,7 +41,7 @@ def get_rgb(llvs: pd.DataFrame, quantile: bool=False, std: bool=False):
 def write(llvs: pd.DataFrame, o: Path):
     """
     """
-    llvs[['lat', 'lon', 'z', 'r', 'g', 'b']].to_csv(o, index=False, header=False)
+    llvs[['lon', 'lat', 'z', 'r', 'g', 'b']].to_csv(o, index=False, header=False)
 
 def llzrgb2las(f: Path, o: Path):
     """
