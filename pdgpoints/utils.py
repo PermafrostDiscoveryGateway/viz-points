@@ -117,6 +117,7 @@ def log_init_stats(self):
     self.L.info('From geoid:      %s' % (self.from_geoid))
     self.L.info('Archive input:   %s' % (self.archive))
     self.L.info('LLVS CSV input:  %s' % (self.llvs))
+    self.L.info('LLV color scale: %s' % (self.llvs_color))
     self.L.info('Given name:      %s' % (self.given_name))
     self.L.info('File extension:  %s' % (self.ext))
     self.L.debug('base_dir:        %s' % (self.base_dir))

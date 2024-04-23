@@ -74,15 +74,19 @@ class Pipeline():
         self.archive = archive
         self.llvs = False
         self.quantile = False
+        self.llvs_color = None
         if llvs:
             if llvs == True:
                 self.llvs = True
+                self.llvs_color = 'linear'
                 self.quantile = False
             elif (llvs.lower() in 'linear'):
                 self.llvs = True
+                self.llvs_color = 'linear'
                 self.quantile = False
             elif (llvs.lower() in 'quantile'):
                 self.llvs = True
+                self.llvs_color = 'quantile'
                 self.quantile = True
             else:
                 self.L.warning(f'Could not understand value given for LLVS CSV processing ({llvs}). Valid values are "linear" and "quantile".')
