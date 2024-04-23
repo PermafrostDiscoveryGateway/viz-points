@@ -7,6 +7,7 @@ from . import utils
 from . import geoid
 from . import lastools_iface
 from . import py3dtiles_iface
+from . import llvs2laz
 
 class Pipeline():
     """
@@ -29,7 +30,8 @@ class Pipeline():
                  translate_z: Union[float, int, Literal[False]]=False,
                  from_geoid: Union[str, Literal[None]]=None,
                  geoid_region: str=REGIONS[0],
-                 archive: bool=False):
+                 archive: bool=False,
+                 llvs: Union[str, bool]=False):
         """
         Initialize the processing pipeline.
 
@@ -50,16 +52,7 @@ class Pipeline():
         self.auto = False # if auto-processing
         self.L = getLogger(__name__)
         self.L.debug('Initializing pipeline.')
-        self.f = Path(f).absolute()
-        self.base_dir = self.f.parent.absolute()
-        self.bn = self.f.name
-        self.given_name = self.f.stem
-        self.ext = self.f.suffix
-        self.ogcwkt_name = self.base_dir / ('%s-wkt.laz' % (self.given_name))
-        self.rewrite_dir = self.base_dir / 'rewrite'
-        self.archive_dir = self.base_dir / 'archive'
-        self.out_dir = self.base_dir / '3dtiles'
-        self.las_name = self.rewrite_dir / ('%s.las' % (self.given_name))
+        self.set_paths(f)
         self.intensity_to_RGB = intensity_to_RGB
         try:
             self.rgb_scale = float(rgb_scale) if rgb_scale else 1.
@@ -79,12 +72,43 @@ class Pipeline():
         self.ellips_lkup = None
         self.geoid_adj = 0
         self.archive = archive
+        self.llvs = False
+        self.quantile = False
+        if llvs:
+            if llvs == True:
+                self.llvs = True
+                self.quantile = False
+            elif (llvs.lower() in 'linear'):
+                self.llvs = True
+                self.quantile = False
+            elif (llvs.lower() in 'quantile'):
+                self.llvs = True
+                self.quantile = True
+            else:
+                self.L.warning(f'Could not understand value given for LLVS CSV processing ({llvs}). Valid values are "linear" and "quantile".')
+                self.llvs = False
         self.merge = merge
         self.steps = 4
+        self.steps = self.steps + 1 if llvs else self.steps
         self.steps = self.steps + 1 if merge else self.steps
         self.steps = self.steps + 1 if from_geoid else self.steps
         self.step = 1
         utils.log_init_stats(self)
+
+    def set_paths(self, f):
+        """
+        Set paths based on an input file ``f``.
+        """
+        self.f = Path(f).absolute()
+        self.base_dir = self.f.parent.absolute()
+        self.bn = self.f.name
+        self.given_name = self.f.stem
+        self.ext = self.f.suffix
+        self.ogcwkt_name = self.base_dir / ('%s-wkt.laz' % (self.given_name))
+        self.rewrite_dir = self.base_dir / 'rewrite'
+        self.archive_dir = self.base_dir / 'archive'
+        self.out_dir = self.base_dir / '3dtiles'
+        self.las_name = self.rewrite_dir / ('%s.las' % (self.given_name))
 
     def run(self) -> Path:
         """
@@ -98,6 +122,11 @@ class Pipeline():
         for d in [self.rewrite_dir, self.archive_dir, self.out_dir]:
             self.L.info('Creating dir %s' % (d))
             utils.make_dirs(d)
+
+        if self.llvs:
+            L.info('Converting CSV with LLVS format (lat, lon, displacement, stdev) to LAZ... (step %s of %s)' % (self.step, self.steps))
+            self.f = llvs2laz.insar_pipeline(f=self.f, quantile=self.quantile)
+            self.set_paths(self.f)
 
         L.info('Rewriting file with new OGC WKT... (step %s of %s)' % (self.step, self.steps))
         lastools_iface.las2las_ogc_wkt(f=self.f,

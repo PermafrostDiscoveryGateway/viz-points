@@ -146,7 +146,8 @@ def las2las(f: Path,
             archive: bool=False,
             intensity_to_RGB: bool=False,
             rgb_scale: float=1.0,
-            translate_z: float=0.0):
+            translate_z: float=0.0,
+            llvrgb: bool=False):
     """
     Simple wrapper around las2las to repair and rework LAS files.
     LAS is rewritten with valid VLRs to correct errors propagated by processing suites
@@ -200,6 +201,18 @@ def las2las(f: Path,
         r_process.stdout.close()
         output = w_process.communicate()[0]
         L.debug('Piped cmd output: %s' % output)
+    elif llvrgb:
+        L.info("Rewriting input CSV from 'xyzRGB' to LAZ")
+        command = [
+            LAS2LAS_LOC,
+            '-itxt',
+            '-i', f,
+            '-set_ogc_wkt',
+            '-iparse', 'xyzRGB',
+            '-epsg', '4326',
+            '-o', output_file
+        ]
+        run_proc(command=command)
     else:
         L.info('Rewriting LAS to avoid VLR size errors (e.g. PDAL reading QTModeler files)')
         command = [
