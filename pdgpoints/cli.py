@@ -13,6 +13,7 @@ def cli():
     parser.add_argument('-c', '--copy_i_to_rgb', action='store_true', help='Whether to copy intensity values to RGB')
     parser.add_argument('-m', '--merge', action='store_true', help='Whether to use merge function')
     parser.add_argument('-a', '--archive', action='store_true', help='Whether to archive the input dataset')
+    parser.add_argument('-l', '--llvs', choices=[True, 'linear', 'quantile'], default=False, help='Whether to process a (lon, lat, displacement, stdev) CSV file and how to scale the resulting colors')
     parser.add_argument('-s', '--rgb_scale', type=float, default=1.0, help='Scale multiplier for RGB values')
     parser.add_argument('-z', '--translate_z', type=float, default=0.0, help='Float translation for z values')
     parser.add_argument('-g', '--from_geoid', choices=MODEL_LIST, default=None, help='The geoid, tidal, or geopotential model to translate from')
@@ -32,5 +33,6 @@ def cli():
                  rgb_scale=args.rgb_scale,
                  translate_z=args.translate_z,
                  from_geoid=args.from_geoid,
-                 geoid_region=args.geoid_region)
+                 geoid_region=args.geoid_region,
+                 llvs=args.llvs)
     p.run()
