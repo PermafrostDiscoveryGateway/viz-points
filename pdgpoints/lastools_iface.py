@@ -218,7 +218,7 @@ def las2las(f: Path,
             '-set_ogc_wkt',
             '-iparse', 'xyzRGB',
             '-epsg', '4326',
-            '-s', '256',
+            '-scale_rgb_up',
             '-o', output_file
         ]
         run_proc(command=command)
