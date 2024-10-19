@@ -39,6 +39,17 @@ def rm_files(files: list[Path]=[]):
         if f.is_file():
             f.unlink()
 
+def mv_olax(file: Path):
+    """
+    """
+    olax_file = Path(str(file.parent), file.stem + '_1' + file.suffix)
+    L = getLogger(__name__)
+    if olax_file.is_file():
+        L.info(f'Replacing {file} with {olax_file}')
+        olax_file.replace(file)
+    else:
+        L.error(f'Cannot move olaz output; no file was found named {olax_file}')
+
 def write_wkt_to_file(f: Path, wkt: str):
     """
     Write well-known text (WKT) string to file. Will overwrite existing file.
