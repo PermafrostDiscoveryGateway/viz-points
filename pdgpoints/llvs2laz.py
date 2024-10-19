@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from pathlib import Path
 from .lastools_iface import las2las
 from . import viridis
@@ -30,12 +31,13 @@ def get_rgb(llvs: pd.DataFrame, quantile: bool=False, std: bool=False):
     else:
         viridis_bin = pd.qcut(llvs['disp'], q=len(viridis_data), labels=False).to_list()
     # look up the color values of each data point and put them in a new column
-    llvs['r'] = [viridis_data[x][0] for x in viridis_bin]
-    llvs['g'] = [viridis_data[x][1] for x in viridis_bin]
-    llvs['b'] = [viridis_data[x][2] for x in viridis_bin]
+    llvs['r'] = [(viridis_data[int(x)][0] if pd.notna(x) else np.nan) for x in viridis_bin]
+    llvs['g'] = [(viridis_data[int(x)][1] if pd.notna(x) else np.nan) for x in viridis_bin]
+    llvs['b'] = [(viridis_data[int(x)][2] if pd.notna(x) else np.nan) for x in viridis_bin]
     del llvs['disp']
     if std:
         del llvs['std']
+    llvs.dropna(inplace=True, axis=0, how='any', subset=['r', 'g', 'b'])
     return llvs
 
 def write(llvs: pd.DataFrame, o: Path):
