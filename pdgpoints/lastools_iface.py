@@ -8,7 +8,7 @@ from logging import getLogger
 from .defs import LAS2LAS_LOC, LASINFO_LOC
 from . import utils
 
-def log_subprocess_output(pipe: PIPE):
+def log_subprocess_output(pipe):
     """
     Log the output from a lastools subprocess.
 
