@@ -17,7 +17,8 @@ setuptools.setup(
     include_package_data=True,
     install_requires=[
         'py3dtiles @ git+https://gitlab.com/Oslandia/py3dtiles.git@68cdcd9080994d38614d3aa5db75cea2456298cf',
-        'pdal'
+        'pdal',
+        'laspy[laszip]'
     ],
     extras_require={
         'dev': [
