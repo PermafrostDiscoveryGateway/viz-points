@@ -112,7 +112,7 @@ class Pipeline():
         self.rewrite_dir = self.base_dir / 'rewrite'
         self.archive_dir = self.base_dir / 'archive'
         self.out_dir = self.base_dir / '3dtiles'
-        self.las_name = self.rewrite_dir / ('%s.las' % (self.given_name))
+        self.las_name = self.rewrite_dir / ('%s.laz' % (self.given_name))
 
     def run(self) -> Path:
         """
