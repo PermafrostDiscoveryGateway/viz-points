@@ -180,7 +180,6 @@ def las2las(f: Path,
             LAS2LAS_LOC,
             '-i', f,
             '-scale_intensity', '%s' % (rgb_scale),
-            '-translate_z', '%s' % (translate_z),
             '-otxt',
             '-oparse', 'xyziiiitanr',
             '-stdout'
@@ -200,6 +199,14 @@ def las2las(f: Path,
         w_process = Popen(write_command, stdin=r_process.stdout, stdout=PIPE)
         r_process.stdout.close()
         output = w_process.communicate()[0]
+        L.info('Translating Z values')
+        command = [
+            LAS2LAS_LOC,
+            '-i', output_file,
+            '-translate_z', '%s' % (translate_z),
+            '-olaz'
+        ]
+        run_proc(command=command)
         L.debug('Piped cmd output: %s' % output)
     elif llvrgb:
         L.info("Rewriting input CSV from 'xyzRGB' to LAZ")
