@@ -208,6 +208,7 @@ def las2las(f: Path,
         ]
         run_proc(command=command)
         L.debug('Piped cmd output: %s' % output)
+        utils.mv_olax(output_file)
     elif llvrgb:
         L.info("Rewriting input CSV from 'xyzRGB' to LAZ")
         command = [
